@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import userImg from '../../../layouts/components/utils/logo.jpeg';
 const PaymentDueAll = () => {
@@ -13,10 +12,9 @@ const PaymentDueAll = () => {
   const handlePrint = () => {
     window.print();
   };
-  const location = useLocation();
 
   // Parse the query parameters from the location object
-  const queryParams = new URLSearchParams(location.search);
+  const queryParams = new URLSearchParams(window.location.search);
 
   // Get the values of 'user' and 'id' parameters
   const user = queryParams.get("building");
@@ -33,7 +31,9 @@ const PaymentDueAll = () => {
     setpageData({ ...pageData, loading: false });
   };
   useEffect(() => {
-    getData();
+    setTimeout(() => {
+        getData();
+    }, 2000)
   }, []);
   
   if (!pageData.loading && total !== null)

@@ -280,7 +280,7 @@ const PaymentRecieve = () => {
           {buyerMaster.Project != null && buyerMaster.Building != null ?
             <>
               <Link to={`/payment/all?project=${buyerMaster.Project}&&building=${buyerMaster.Building}`} className="btn btn-primary mx-1 my-1" target="_blank">View All Payments</Link>
-              <Link to={`/payment/due/all?project=${buyerMaster.Project}&&building=${buyerMaster.Building}`} className="btn btn-primary mx-1 my-1" target="_blank">View All Dues</Link>
+              <Link to={`/payment/due/all?project=${buyerMaster.Project}&&building=${buyerMaster.Building}`} className="btn btn-primary mx-1 my-1">View All Dues</Link>
             </>
             :
             <>
