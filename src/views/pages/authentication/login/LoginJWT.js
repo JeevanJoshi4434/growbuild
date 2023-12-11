@@ -1,55 +1,59 @@
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link,useLocation } from "react-router-dom"
 import { CardBody, FormGroup, Form, Input, Button, Label } from "reactstrap"
 import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy"
 import { Mail, Lock, Check } from "react-feather"
 import { loginWithJWT } from "../../../../redux/actions/auth/loginActions"
 import { connect } from "react-redux"
 import { history } from "../../../../history"
-import axios from "axios" 
+import axios from "axios"
+
+import Cookies from "js-cookie"
 class LoginJWT extends React.Component {
   state = {
     email: "demo@demo.com",
     password: "demodemo",
     remember: false,
-    user:[]
+    user: []
   }
-
-  handleLogin = async() => {
-    console.log(this.state.email)
-    console.log(this.state.password)
+  // Get the values of 'user' and 'id' parameters
+  
+  
+  handleLogin = async () => {
+    let URI = window.location.search;
     const res = await axios.post(`${process.env.REACT_APP_PORT}/api/login`, {
-      Headers:{
-        'Access-Control-Allow-Headers':'Content-Type',
+      Headers: {
+        'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Origin': '*',
-        'Content-Type':'application/json'
+        'Content-Type': 'application/json'
       },
       email: this.state.email,
       password: this.state.password,
-    },{
-      withCredentials:true
     })
-    if(res.status === 200){
-      history.push("/");
-      this.setState({user:res.data});
-    }else{
+    let url = "/";
+    URI.length > 0 ? url = window.location.search.replace("?redirect=","") : url = "/";
+    if (res.status === 200) {
+      Cookies.set('token', res.data.accessToken, { expires: 7 });
+     history.push(url);
+      this.setState({ user: res.data });
+    } else {
       alert("Error")
     }
-      // const res = await fetch("/api/login", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     email: this.state.email,
-      //     password: this.state.password,
-      //   }),
-      // })
-      // if(res.status === 200){
-      //   history.push("/");
-      //   this.setState({user:res.json()});
-      //   console.log(this.state.user);
-      // }
+    // const res = await fetch("/api/login", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     email: this.state.email,
+    //     password: this.state.password,
+    //   }),
+    // })
+    // if(res.status === 200){
+    //   history.push("/");
+    //   this.setState({user:res.json()});
+    //   console.log(this.state.user);
+    // }
   }
   render() {
     return (
@@ -104,7 +108,7 @@ class LoginJWT extends React.Component {
               >
                 Register
               </Button.Ripple>
-              <Button.Ripple color="primary" onClick={()=>this.handleLogin()}>
+              <Button.Ripple color="primary" onClick={() => this.handleLogin()}>
                 Login
               </Button.Ripple>
             </div>

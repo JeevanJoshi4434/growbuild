@@ -5,7 +5,9 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { Trash } from 'react-feather';
 import swal from 'sweetalert';
-
+import { Badge, CardBody, CardHeader } from 'reactstrap';
+import DataTable from 'react-data-table-component';
+import * as Icon from 'react-feather';
 const renderOptions = (n) => {
   const options = [];
 
@@ -36,7 +38,7 @@ const renderFlat = (n) => {
 
 const BuyerMaster = () => {
   const [buyerMaster, setBuyerMaster] = useState({
-    Project: null, Building: null, floor: null, unit: null, secondfloor: null, flat: null, parking: null, booking_price: null, booking_date: null, allotment_date: null, agreement_date: null, Owner_name: null, payment_stage: null, price: null, payment_receive: null, payment_type: null, check_number: null, date: null, bank_name: null, branch_name: null, bank_account: null, card_number: null, id: null
+    Project: null, Building: null, floor: null, unit: null, secondfloor: null, flat: null, parking: null, booking_price: null, booking_date: null, allotment_date: null, agreement_date: null, Owner_name: null, payment_stage: null, price: null, payment_receive: null, payment_type: null, check_number: null, date: null, bank_name: null, branch_name: null, bank_account: null, card_number: null, id: null,price_with_tax: null,balance:null
   });
 
 
@@ -52,6 +54,58 @@ const BuyerMaster = () => {
   const [allBuilding, setAllBuilding] = useState(null);
   const [Building, setBuilding] = useState(null);
   const [AllProjects, setAllProjects] = useState(null);
+  const [dataState, setDataState] = useState({
+    columns: [
+      {
+        name: "Payment Plan",
+        selector: "payment_plan",
+        sortable: true,
+        minWidth: "200px",
+        cell: (row) => (
+          <div className="d-flex flex-xl-row flex-column align-items-xl-center align-items-start py-xl-0 py-1">
+            <div className="user-img ml-xl-0 ml-2">
+            </div>
+            <div className="user-info text-truncate ml-xl-50 ml-0">
+              <span
+                title={row.stage_name}
+                className="d-block text-bold-500 text-truncate mb-0"
+              >
+                {row.stage_name}
+              </span>
+            </div>
+          </div>
+        ),
+      },
+      {
+        name: "Demand Rate(%)",
+        selector: "demand_rate",
+        sortable: true,
+        cell: (row) => (
+          <p className="text-bold-500 text-truncate mb-0">{row.amount}%</p>
+        ),
+      },
+      {
+        name: "Status",
+        selector: "Status",
+        sortable: true,
+        cell: (row) => (
+          <Badge
+            color={row.Status === "pending" ? "light-danger" : "light-success"}
+            pill
+          >
+            {row.Status}
+          </Badge>
+        ),
+      },
+      
+    ],
+    data: [
+    ],
+    filteredData: [],
+    value: "",
+    buildingId: null,
+    projectId:null
+  })
   const getProject = async () => {
     const res = await axios.get(process.env.REACT_APP_PORT + '/api/all/project', {
       Headers: {
@@ -121,7 +175,9 @@ const BuyerMaster = () => {
       bank_name: buyerMaster?.bank_name,
       branch_name: buyerMaster?.branch_name,
       bank_account: buyerMaster?.bank_account,
-      card_number: buyerMaster?.card_number
+      card_number: buyerMaster?.card_number,
+      price_with_tax: buyerMaster?.price_with_tax,
+      balance:buyerMaster.balance
     })
     if (res.status === 200) {
       window.alert('Updated Successfully!');
@@ -144,16 +200,15 @@ const BuyerMaster = () => {
       }
     }
   }
-  const [buyerDetail, setBuyerDetail] = useState(null);
+  const [buyerDetail, setBuyerDetail] = useState([]);
   const getBuyerDetail = async (building, project, unit, flat, floor) => {
     if ((building?.length === 12 || building?.length === 24) && (project?.length === 12 || project?.length === 24) && (unit?.length === 12 || unit?.length === 24) && (flat !== 0 || flat !== null) && (floor !== 0 || floor !== null)) {
-      const res = await axios.get(`${process.env.REACT_APP_PORT}/api/${building}/${project}/${unit}/${flat}/${floor}`, {
+      const res = await axios.get(`${process.env.REACT_APP_PORT}/api/${building}/${project}/${unit}`, {
         Headers: {
           'Content-Type': 'application/json'
         }
       })
       if (res.status === 200) {
-        console.log(res.data);
         let data = res.data;
         setBuyerMaster({
           ...buyerMaster,
@@ -164,11 +219,11 @@ const BuyerMaster = () => {
           secondfloor: buyerMaster?.secondfloor,
           flat: buyerMaster?.flat,
           parking: buyerMaster?.parking,
-          booking_price: data?.booking_price,
+          booking_price: data?.booking?.booking_price,
           booking_date: buyerMaster?.booking_date,
           allotment_date: buyerMaster?.allotment_date,
           agreement_date: buyerMaster?.agreement_date,
-          Owner_name: data?.first_applicant_name,
+          Owner_name: data?.booking.first_applicant_name,
           payment_stage: buyerMaster?.payment_stage,
           price: buyerMaster?.price,
           payment_receive: buyerMaster?.payment_receive,
@@ -178,9 +233,12 @@ const BuyerMaster = () => {
           bank_name: buyerMaster?.bank_name,
           branch_name: buyerMaster?.branch_name,
           bank_account: buyerMaster?.bank_account,
-          card_number: buyerMaster?.card_number
+          card_number: buyerMaster?.card_number,
+          price_with_tax: buyerMaster?.price_with_tax,
+          balance:data?.pending
         })
-        setBuyerDetail(data);
+        setBuyerDetail(data?.booking);
+        setDataState({...dataState, data: data?.demand});
       }
     }
   }
@@ -217,7 +275,8 @@ const BuyerMaster = () => {
         bank_name: buyerMaster?.bank_name,
         branch_name: buyerMaster?.branch_name,
         bank_account: buyerMaster?.bank_account,
-        card_number: buyerMaster?.card_number
+        card_number: buyerMaster?.card_number,
+        price_with_tax: buyerMaster?.price_with_tax
       })
     }
   }
@@ -226,9 +285,8 @@ const BuyerMaster = () => {
     getDemand(e);
   }
   const fetchDetail = () => {
-    if (buyerMaster?.flat !== null || buyerMaster?.flat > 0) {
-      getBuyerDetail(buyerMaster.Building, buyerMaster.Project, buyerMaster.unit, buyerMaster.flat, buyerMaster.floor);
-    }
+      getBuyerDetail(buyerMaster.Building, buyerMaster.Project, buyerMaster.unit);
+    
   }
 
   const [getData, setGetData] = useState(null);
@@ -435,62 +493,26 @@ const BuyerMaster = () => {
                     )}
                     {allUnits.length > 0 &&
                       allUnits.map((i) => {
-                        return (
+                        let s= "";
+                        s=i.unit_name;
+                        s=s.slice(0,1);
+                        if(s===buyerMaster.floor)
+                        {
+                          return (
                           <option value={i?._id} name={i?._id}>
                             {i?.unit_name}
                           </option>
                         );
+                        }
                       })}
                   </>
                 )}
               </select>
             </div>
           </div>
-
-          <div className="col-md-4 col-12 mb-2">
-            <p className="text-alternate">Select Flat</p>
-            <div className="input-group">
-              <select
-                className="form-control"
-                id="flat"
-                name="flat"
-                value={buyerMaster.flat}
-                onChange={
-                  handleInputs
-
-                }
-              >
-                {Building === null ? (
-                  <option value={null} name={null}>
-                    Loading...
-                  </option>
-                ) :
-                  <>
-                    {buyerMaster?.floor === null && <option value={null} name={null}>
-                      Select Floor first
-                    </option>}
-                    {buyerMaster?.unit === null && <option value={null} name={null}>
-                      Select Unit first
-                    </option>}
-                    {buyerMaster?.unit !== null && buyerMaster?.floor !== null && <option value={null} name={null}>
-                      Select Flat
-                    </option>}
-                  </>
-                }
-                {Building !== null && Building?.total_number_of_flats === 0 && (
-                  <option value={null} name={null}>
-                    No Flat Avaliable
-                  </option>
-                )}
-                {Building !== null && buyerMaster?.unit !== null && buyerMaster?.floor !== null &&
-                  Building?.total_number_of_flats > 0 &&
-                  renderFlat(Building?.total_number_of_flats)}
-              </select>
-            </div>
-          </div>
           <div className="col-md-6 col-12 mb-2">
             <p className="text-alternate">Fetch Details</p>
-            {buyerMaster?.flat !== null ?
+            {buyerMaster?.unit !== null ?
               <button type="button" className="btn btn-primary" onClick={() => fetchDetail(buyerMaster?.payment_stage)}>Fetch Details</button> :
               <button className="btn btn-primary" disabled >Fetch Details</button>}
           </div>
@@ -499,54 +521,25 @@ const BuyerMaster = () => {
             {buyerMaster?.Owner_name !== null ? <p>{buyerMaster?.Owner_name}</p>
               : <p>Loading...</p>}
           </div>
-          <div className="col-md-6 col-12 mb-2">
-            <p className="text-alternate">Select Payment Stage</p>
-            <div className="input-group">
-              <select className="form-control" id="stage" name="payment_stage" onChange={handleInputs} value={buyerMaster?.payment_stage}>
-                {allBuilding === null ? <option value="1">Select Building First</option> :
-                  <>
-                    {allBuilding !== null && AllStage?.length === 0 && AllStage !== null && <option value="2">No Stage Available</option>}
-                    {allBuilding !== null && AllStage?.length > 0 && AllStage !== null &&
-                      <>
-                        <option value="2">Select Stage</option>
-                        {allBuilding !== null && AllStage?.length > 0 && AllStage !== null &&
-                          AllStage?.map((i) => {
-                            console.log(i)
-                            return (
-                              <option value={i?._id} name={i?._id} >{i?.stage_name}</option>
-                            )
-
-                          })
-                        }
-                      </>}
-                  </>}
-              </select>
-            </div>
+          <div className="col-md-12 col-12 mb-2">
+          <DataTableCustom dataState={dataState} setDataState={setDataState} />
           </div>
-          <div className="col-md-6 col-12 mb-2">
-            <p className="text-alternate">Stage</p>
-            {buyerMaster?.payment_stage !== null ?
-              <button className="btn btn-primary" type="button" onClick={() => fetchOwner(buyerMaster?.payment_stage)}>Fetch Stage</button> :
-              <button className="btn btn-primary" disabled >Fetch Stage</button>}
-          </div>
-          <div className="col-md-6 col-12 mb-2">
-            <p className="text-alternate">Stage Price</p>
+          <h4 className="text-alternate text-primary">Payment Details</h4>
+          <div className="col-md-4 col-12 mb-2">
+            <p className="text-alternate">Balance</p>
             <div className="input-group">
               <input
                 type="text"
                 className="form-control"
-                id="price"
-                aria-label="Select Stage First"
-                placeholder="Select Stage First"
-                name="price"
-                value={buyerMaster.price}
+                id="balance"
+                disabled
+                name="balance"
+                value={buyerMaster.balance}
                 onChange={handleInputs}
-                readonly="true"
-                required=""
               />
             </div>
           </div>
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Payment Recived (Ammount)</p>
             <div className="input-group">
               <input
@@ -560,9 +553,7 @@ const BuyerMaster = () => {
               />
             </div>
           </div>
-          <h4 className="text-alternate text-primary">Payment Details</h4>
-
-          <div className="col-md-6 offset-md-3 col-12 mb-2">
+          <div className="col-md-4  col-12 mb-2">
             <p className="text-alternate">Select Payment Type</p>
             <div className="input-group">
               <select
@@ -934,51 +925,6 @@ const BuyerMaster = () => {
               </div>
             </div>
           </>}
-
-
-          {/* <div className="col-md-4 col-12 mb-2">
-            <p className="text-alternate"> Booking Date</p>
-            <div className="input-group">
-              <input
-                type="date"
-                className="form-control"
-                id="bookingDate"
-                name="booking_date"
-                value={buyerMaster.booking_date}
-                onChange={handleInputs}
-                required=""
-              />
-            </div>
-          </div>
-          <div className="col-md-4 col-12 mb-2">
-            <p className="text-alternate"> Allotment Date</p>
-            <div className="input-group">
-              <input
-                type="date"
-                className="form-control"
-                id="allotmentDate"
-                name="allotment_date"
-                value={buyerMaster.allotment_date}
-                onChange={handleInputs}
-                required=""
-              />
-            </div>
-          </div>
-          <div className="col-md-4 col-12 mb-2">
-            <p className="text-alternate"> Agreement Date</p>
-            <div className="input-group">
-              <input
-                type="date"
-                className="form-control"
-                id="agreementDate"
-                name="agreement_date"
-                value={buyerMaster.agreement_date}
-                onChange={handleInputs}
-                required=""
-              />
-            </div>
-          </div> */}
-
           <div className="col-md-12 col-12 text-right">
             <button
               type="button"
@@ -997,48 +943,44 @@ const BuyerMaster = () => {
             </button>
           </div>
         </form>
-        <form
-            className="row px-4 py-4 mx-2 my-2 shadow-lg needs-validation"
-            novalidate
-          >
-            <h3 className="text-alternate text-primary">Payment History</h3>
-            <div className="d-flex justify-content-center">
-              <table className="table table-striped table-responsive">
-                <tr>
-                  <th>Sno.</th>
-                  <th>Owner</th>
-                  <th>Payment Type</th>
-                  <th>Paid</th>
-                  <th>Total Stage Price</th>
-                </tr>
-                {getData?.map((i, j) => {
-                  let id = i?._id;
-                  return (
-                    <tr>
-                      <td>{j + 1}</td>
-                      <td>{i?.Owner_name}</td>
-                      <td>{i?.payment_type}</td>
-                      <td>{i?.payment_receive}</td>
-                      <td>{i?.price}</td>
-                      <td>
-                        <Trash
-                          className="cursor-pointer"
-                          color="red"
-                          size={30}
-                          onClick={() => {
-                            deletemaster(id);
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </table>
-            </div>
-          </form>
       </div>
     </>
   );
 }
 
 export default BuyerMaster
+
+
+const DataTableCustom = (props) => {
+  const { dataState, setDataState } = props;
+  let { data, columns, value, filteredData } = dataState;
+  let val, name;
+  const handleOnchange = (e) => {
+    name = e.target.name;
+    val = e.target.value;
+    setDataState({ ...dataState, [name]: val });
+  }
+  return (
+    <div>
+      <CardHeader>
+        <h5>Demands</h5>
+      </CardHeader>
+      <CardBody className="rdt_Wrapper">
+        <DataTable
+          className="dataTable-custom"
+          data={value.length ? filteredData : data}
+          columns={columns}
+          noHeader
+          pagination
+          subHeader
+          subHeaderComponent={
+            <div className="d-flex flex-wrap justify-content-between">
+              <div className="add-new">
+              </div>
+            </div>
+          }
+        />
+      </CardBody>
+    </div>
+  );
+}

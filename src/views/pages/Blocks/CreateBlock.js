@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Edit, Trash } from "react-feather";
 import { useHistory } from "react-router-dom";
 import swal from "sweetalert";
+import BuildingTable from "./BlockUtil";
 const CreateBlock = () => {
   var history = useHistory();
   const [isEdit, setIsEdit] = useState(false);
@@ -22,7 +23,6 @@ const CreateBlock = () => {
   useEffect(() => {
     getProject();
   }, [])
-  console.log(AllProjects);
   let name,value;
   const handleInputs = (e)=>{
     name = e.target.name;
@@ -90,15 +90,14 @@ const CreateBlock = () => {
   }
   useEffect(() => {
     getBuilding();
-  }, [])
-  
+  }, []);
   return (
     <>
       <div className="container bg-white p-2 rounded-2">
         <form className="row px-4 py-4 mx-2 my-2 justify-content-center shadow-lg">
           <h3 className="text-alternate text-primary">Create Building</h3>
           <hr />
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Select Project</p>
             <div className="input-group">
               <select className="form-control" id="project" name="Project" onChange={handleInputs} value={createBlock.Project} >
@@ -113,7 +112,7 @@ const CreateBlock = () => {
               </select>
             </div>
           </div>
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Building Name</p>
             <div className="input-group">
               <input
@@ -126,7 +125,7 @@ const CreateBlock = () => {
               />
             </div>
           </div>
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Total No of Floors</p>
             <div className="input-group">
               <input
@@ -139,42 +138,6 @@ const CreateBlock = () => {
               />
             </div>
           </div>
-          <div className="col-md-6 col-12 mb-2">
-            <p className="text-alternate">Total No Of Flats</p>
-            <div className="input-group">
-              <input
-                type="number"
-                className="form-control"
-                id="flats"
-                name="total_number_of_flats"
-                onChange={handleInputs} value={createBlock.total_number_of_flats}
-                required=""
-              />
-            </div>
-          </div>
-          <div className="col-md-6 col-12 mb-2">
-            <p className="text-center">Parkings</p>
-            <div className="input-group">
-              <span className="input-group-text">
-                <input
-                  aria-label="Parkings"
-                  id="isParkings"
-                  name="isParkings"
-                  type="radio"
-                  className="form-check-input"
-                />
-              </span>
-              <input
-                aria-label="No Of Parking"
-                placeholder="Enter Total No Of Parkings"
-                className="form-control"
-                id="parkings"
-                name="parkings"
-                onChange={handleInputs} value={createBlock.parkings}
-              />
-            </div>
-          </div>
-
           <div className="col-md-12 col-12 text-right">
           {isEdit
               ?<>
@@ -189,27 +152,19 @@ const CreateBlock = () => {
           className="row px-4 py-4 mx-2 my-2 shadow-lg needs-validation"
           novalidate
         >
-          <h3 className="text-alternate text-primary">All Blocks</h3>
+          <h3 className="text-alternate text-primary">All Buildings</h3>
           <div className="d-flex justify-content-center">
             <table className="table table-striped table-responsive" >
               <tr>
                 <th>Sno</th>
+                <th>Project Name</th>
                 <th>Building Name</th>
-                <th>Flats</th>
                 <th>Floor</th>
                 <th>Action</th>
               </tr>
               {AllBuilding?.map((i, j) => {
                 let id = i?._id;
-                return (
-                  <tr>
-                    <td>{j + 1}</td>
-                    <td>{i?.buildingName}</td>
-                    <td>{i?.total_number_of_flats}</td>
-                    <td>{i?.total_number_of_floors}</td>
-                    <td><Edit className="cursor-pointer" color="green" size={30} onClick={() => { edit(i) }} /><Trash className="cursor-pointer" color="red" size={30} onClick={() => { deleteProject(id) }} /></td>
-                  </tr>
-                )
+                return <BuildingTable i={i} j={j} setIsEdit={setIsEdit} setAllBuilding={setAllBuilding} id={id} setCreateBlock={setCreateBlock} createBlock={createBlock} />;
               })}
 
             </table>

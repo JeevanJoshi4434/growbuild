@@ -1,8 +1,6 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
-import { Input } from 'reactstrap'
-import { RequiredField } from '../../../utility/RequiredField'
 
 const renderOptions = (n) => {
 
@@ -96,16 +94,16 @@ const BookingStatus = () => {
     }
   }
 
-  const getDetails = async (building, project, unit, flat, floor) => {
-    if ((building.length === 12 || building.length === 24) && (project.length === 12 || project.length === 24) && (unit.length === 12 || unit.length === 24) && (flat !== 0|| flat !== null) && (floor !== 0||floor !== null) ) {
-      const res = await axios.get(`${process.env.REACT_APP_PORT}/api/${building}/${project}/${unit}/${flat}/${floor}`, {
+  const getDetails = async (building, project, unit) => {
+    if ((building.length === 12 || building.length === 24) && (project.length === 12 || project.length === 24) && (unit.length === 12 || unit.length === 24) ) {
+      const res = await axios.get(`${process.env.REACT_APP_PORT}/api/${building}/${project}/${unit}`, {
         Headers: {
           'Content-Type': 'application/json'
         }
       })
       if (res.status === 201){
          setInfo(false);
-         setCreateFlat({...CreateFlat,price:0,owner:"No Record Found!", floor: CreateFlat.floor, building: CreateFlat.building, unit: CreateFlat.unit, flat: CreateFlat.flat, allotmentDate: null, parking: 0, id: CreateFlat.id,bookingDate:null,agreementDate:null })
+         setCreateFlat({...CreateFlat,price:0,owner:"No Record Found!", floor: CreateFlat.floor, building: CreateFlat.building, unit: CreateFlat.unit, allotmentDate: null, parking: 0, id: CreateFlat.id,bookingDate:null,agreementDate:null })
       
         }
       else if (res.status === 200) { 
@@ -113,7 +111,7 @@ const BookingStatus = () => {
          setGetInfo(res.data); 
          console.log(res.data);
         let data = res.data;
-         setCreateFlat({...CreateFlat,price:data?.booking_price,owner:data?.first_applicant_name, floor: CreateFlat.floor, building: CreateFlat.building, unit: CreateFlat.unit, flat: CreateFlat.flat, allotmentDate: data?.allotment_date, parking: data?.parking, id: CreateFlat.id,bookingDate:data?.booking_date,agreementDate:data?.agreement_date })
+         setCreateFlat({...CreateFlat,price:data?.booking.booking_price,owner:data?.booking.first_applicant_name, floor: CreateFlat.floor, building: CreateFlat.building, unit: CreateFlat.unit,allotmentDate: data?.booking.allotment_date, parking: data?.booking.parking, id: CreateFlat.id,bookingDate:data?.booking.booking_date,agreementDate:data?.booking.agreement_date })
       
       }
     }
@@ -171,30 +169,6 @@ const BookingStatus = () => {
               </select>
             </div>
           </div>
-          {/* <div className="col-md-6 col-12 mb-2">
-            <p className="text-alternate">Select Unit</p>
-            <div className="input-group">
-              <select className="form-control" id="unit" name="unit" onChange={handleInputs} value={CreateFlat.unit}>
-                {CreateFlat.Project === null && CreateFlat.building === null && <option value={null} name={null}>Select Project</option>}
-                {CreateFlat.building === null && CreateFlat.Project !== null && <option value={null} name={null}>Select Building</option>}
-                {CreateFlat.building !== null && CreateFlat.Project !== null && allUnits === null && <option value={null} name={null}>Loading...</option>}
-                {allUnits !== null &&
-                  <>
-                    {allUnits.length === 0
-                      ? <option value={null} name={null}>No Units Avaliable.</option>
-                      : <option value={null} name={null}>Select Unit</option>
-
-                    }
-                    {allUnits.length > 0 && allUnits.map((i) => {
-                      return (
-                        <option value={i?._id} name={i?._id}>{i?.unit_name}</option>
-                      )
-                    })}
-                  </>
-                }
-              </select>
-            </div>
-          </div> */}
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Select Floor</p>
             <div className="input-group">
@@ -228,16 +202,24 @@ const BookingStatus = () => {
 
                     }
                     {allUnits.length > 0 && allUnits.map((i) => {
-                      return (
-                        <option value={i?._id} name={i?._id}>{i?.unit_name}</option>
-                      )
-                    })}
+                        let s= "";
+                        s=i.unit_name;
+                        s=s.slice(0,1);
+                        if(s===CreateFlat.floor)
+                        {
+                          return (
+                          <option value={i?._id} name={i?._id}>
+                            {i?.unit_name}
+                          </option>
+                        );
+                        }
+                      })}
                   </>
                 }
               </select>
             </div>
           </div>
-          <div className="col-md-4 col-12 mb-2">
+          {/* <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Select Flat</p>
             <div className="input-group">
               <select className="form-control" id="flat" name="flat" value={CreateFlat.flat} onChange={(e)=>{handleInputs(e);}} >
@@ -254,10 +236,10 @@ const BookingStatus = () => {
                 }
               </select>
             </div>
-          </div>
+          </div> */}
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Fetch Data</p>
-            <button type='button' className='btn btn-primary ' onClick={()=>getDetails(CreateFlat.building,CreateFlat.Project,CreateFlat.unit,CreateFlat.flat,CreateFlat.floor)} >Fetch Booking</button>
+            <button type='button' className='btn btn-primary ' onClick={()=>getDetails(CreateFlat.building,CreateFlat.Project,CreateFlat.unit)} >Fetch Booking</button>
           </div>
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Owner Name</p>
@@ -277,15 +259,6 @@ const BookingStatus = () => {
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Parking</p>
             <div className="input-group">
-              <span className="input-group-text">
-                <input
-                  aria-label="Parkings"
-                  id="isParkings"
-                  name="isParkings"
-                  type="radio"
-                  className="form-check-input"
-                />
-              </span>
               <input
                 type="number"
                 aria-label="Parking No"
@@ -294,6 +267,7 @@ const BookingStatus = () => {
                 name="parking"
                 value={CreateFlat?.parking}
                 onChange={handleInputs}
+                disabled
               />
             </div>
           </div>

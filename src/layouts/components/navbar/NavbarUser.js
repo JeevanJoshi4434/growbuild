@@ -20,7 +20,7 @@ import Autocomplete
 import {useAuth0} from '../../../authServices/auth0/auth0Service';
 import {history} from '../../../history';
 import {IntlContext} from '../../../utility/context/Internationalization';
-import userImg from '../../components/utils/logo.jpg'
+import userImg from '../../components/utils/logo.jpeg'
 import { logoutUser } from '../../../views/pages/authentication/login/logout';
 const handleNavigation = (e, path) => {
   e.preventDefault ();

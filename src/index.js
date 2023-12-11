@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react"
+import React, { Suspense, lazy, useEffect } from "react"
 import ReactDOM from "react-dom"
 import { Provider } from "react-redux"
 import { Auth0Provider } from "./authServices/auth0/auth0Service"
@@ -10,11 +10,9 @@ import { store } from "./redux/storeConfig/store"
 import Spinner from "./components/@vuexy/spinner/Fallback-spinner"
 import "./index.scss"
 import "./@fake-db"
+import Cookies from "js-cookie"
 
 const LazyApp = lazy(() => import("./App"))
-
-// configureDatabase()
-
 ReactDOM.render(
   <Auth0Provider
     domain={config.domain}

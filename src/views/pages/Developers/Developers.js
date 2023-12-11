@@ -54,8 +54,6 @@ const Developers = () => {
       mobileNumber: Developer.mobileNumber
     })
     if (res.status === 200) {
-      console.log(res.data);
-      console.log("Updated!");
     }
   }
 

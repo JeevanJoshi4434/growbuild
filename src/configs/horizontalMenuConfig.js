@@ -88,7 +88,7 @@ const horizontalMenuConfig = [
         id: "CreateUnits",
         title: "Units",
         type: "item",
-        icon: <Icon.Archive size={16} />,
+        icon: <Icon.Box size={16} />,
         permissions: ["admin", "editor"],
         navLink: "/unit/create",
       },
@@ -103,11 +103,19 @@ const horizontalMenuConfig = [
 
       {
         id: "CreateFlat",
-        title: "Flats",
+        title: "Unit Details",
+        type: "item",
+        icon: <Icon.Codesandbox size={16} />,
+        permissions: ["admin", "editor"],
+        navLink: "/flat/create",
+      },
+      {
+        id: "ExtraFacilities",
+        title: "Extra Facilities",
         type: "item",
         icon: <Icon.Menu size={16} />,
         permissions: ["admin", "editor"],
-        navLink: "/flat/create",
+        navLink: "/flat/extrafacilities",
       },
       // {
       //   id: "allFlat",
@@ -143,12 +151,20 @@ const horizontalMenuConfig = [
       //   navLink: "/booking/all",
       // },
       {
-        id: "createNewStage",
-        title: "Demands",
+        id: "Paymentplan",
+        title: "Payment Plan",
         type: "item",
-        icon: <Icon.BarChart size={16} />,
+        icon: <Icon.Layers size={16} />,
         permissions: ["admin", "editor"],
         navLink: "/deemand/create",
+      },
+      {
+        id: "DemandRaise",
+        title: "Raise Demands",
+        type: "item",
+        icon: <Icon.Paperclip size={20} />,
+        permissions: ["admin", "editor"],
+        navLink: "/demands/raise",
       },
       // {
       //   id: "All stages",
@@ -167,11 +183,12 @@ const horizontalMenuConfig = [
         permissions: ["admin", "editor"],
         navLink: "/buyer-master",
       },
+      
       {
         id: "paymentRecieve",
         title: "Payment Recieve",
         type: "item",
-        icon: <Icon.CreditCard size={20} />,
+        icon: <Icon.Book size={20} />,
         permissions: ["admin", "editor"],
         navLink: "/payment/recieve",
       },

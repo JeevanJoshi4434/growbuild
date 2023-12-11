@@ -20,12 +20,20 @@ const AddStage = lazy(() => import("./views/pages/Deemand/CreateStage"));
 const AllDeemand = lazy(() => import("./views/pages/Deemand/AllStage"));
 const AddFlat = lazy(() => import("./views/pages/Flat/CreateFlat"));
 const AllFlat = lazy(() => import("./views/pages/Flat/ViewFlat"));
+const PaymentStatus = lazy(() => import("./views/pages/PaymentStatus/PaymentStatus"));
+const PaymentPlans = lazy(() => import("./views/pages/Payment/PaymentPlans"));
+const PaymentAll = lazy(() => import("./views/pages/Payment/PaymentAll.jsx"));
+const PaymentDueAll = lazy(() => import("./views/pages/Payment/PaymentDueAll.jsx"));
+const PaymentLeft = lazy(() => import("./views/pages/Payment/PaymentPending.jsx"));
+const PaymentSingle = lazy(() => import("./views/pages/Payment/SinglePaymentDetails.jsx"));
+const ExtraFacilities = lazy(() => import("./views/pages/Unit/ExtraFacilities"));
 const AddParking = lazy(() =>
   import("./views/pages/Parkings/CreateParking.js")
 );
 const AllParking = lazy(() => import("./views/pages/Parkings/ViewParking.js"));
 const AddUnit = lazy(() => import("./views/pages/Unit/CreateUnit.js"));
 const AllUnit = lazy(() => import("./views/pages/Unit/ViewUnit.js"));
+const RaiseDemand = lazy(()=>import("./views/Demand/RaiseDemand"));
 // <---custom route end--->
 const paymentRecieve = lazy(() =>
   import("./views/pages/Payment/PaymentRecieve")
@@ -264,6 +272,7 @@ class AppRouter extends React.Component {
       // Set the directory path if you are deploying in sub-folder
       <Router history={history}>
         <Switch>
+          {/* <AppRoute path="/pages/log" component={Login} /> */}
           <AppRoute exact path="/" component={analyticsDashboard} />
           <AppRoute exact path="/developers" component={dev} />
           <AppRoute exact path="/developers/all" component={ViewDev} />
@@ -282,6 +291,14 @@ class AppRouter extends React.Component {
           <AppRoute exact path="/parking/create" component={AddParking} />
           <AppRoute exact path="/unit/all" component={AllUnit} />
           <AppRoute exact path="/unit/create" component={AddUnit} />
+          <AppRoute exact path="/payment/status" component={PaymentStatus} />
+          <AppRoute exact path="/flat/extrafacilities" component={ExtraFacilities} />
+          <AppRoute exact path="/payment/plan" component={PaymentPlans} />
+          <Route exact path="/payment/all" component={PaymentAll} />
+          <Route exact path="/payment/due" component={PaymentLeft} />
+          <Route exact path="/payment/due/all" component={PaymentLeft} />
+          <Route exact path="/payment/single" component={PaymentSingle} />
+          <AppRoute exact path="/demands/raise" component={RaiseDemand} />
           <AppRoute
             exact
             path="/booking-status/view"

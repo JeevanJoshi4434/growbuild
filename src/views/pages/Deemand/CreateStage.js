@@ -130,7 +130,7 @@ const CreateStage = () => {
           className="row px-4 py-4 mx-2 my-2 shadow-lg needs-validation"
           novalidate
         >
-          <h3 className="text-alternate text-primary">Create New Stage</h3>
+          <h3 className="text-alternate text-primary">Payment Plans</h3>
           <hr />
           <div className="col-md-6 col-12 mb-2">
             <p className="text-alternate">Select Project</p>
@@ -150,7 +150,7 @@ const CreateStage = () => {
                 }
               </select>
             </div>
-          </div>
+          </div>          
           <div className="col-md-6 col-12 mb-2">
             <p className="text-alternate">Select Building</p>
             <div className="input-group">
@@ -198,7 +198,7 @@ const CreateStage = () => {
           <div className="col-md-6 col-12 mb-2">
             <label htmlFor="ammount" className="text-alternate mb-2">
               {" "}
-              Ammount
+              Demand Rate(%)
             </label>
             <input
               type="number"
@@ -210,20 +210,7 @@ const CreateStage = () => {
               required=""
             />
           </div>
-          <div className="col-md-12 col-12 mb-2">
-            <p className="text-alternate">Extra Facilities</p>
-            <div className="input-group">
-              <textarea
-                type="text"
-                className="form-control"
-                id="facilities"
-                name="extra_facilities"
-                onChange={handleInputs}
-                value={Demand.extra_facilities}
-                required=""
-              ></textarea>
-            </div>
-          </div>
+
 
           <div className="col-md-12 col-12 text-right">
           {isEdit ? (
@@ -268,13 +255,15 @@ const CreateStage = () => {
             className="row px-4 py-4 mx-2 my-2 shadow-lg needs-validation"
             novalidate
           >
-            <h3 className="text-alternate text-primary">All Flats</h3>
+            <h3 className="text-alternate text-primary">All Plans</h3>
             <div className="d-flex justify-content-center">
               <table className="table table-striped table-responsive">
                 <tr>
                   <th>Sno.</th>
+                  <th>Project</th>
+                  <th>Building</th>
                   <th>Stage Name</th>
-                  <th>Amount</th>
+                  <th>Demand Rate(%)</th>
                   <th>Action</th>
                 </tr>
                 {AllStage?.map((i, j) => {
@@ -282,6 +271,8 @@ const CreateStage = () => {
                   return (
                     <tr>
                       <td>{j + 1}</td>
+                      <td>{i?.projectName}</td>
+                      <td>{i?.buildingName}</td>
                       <td>{i?.stage_name}</td>
                       <td>{i?.amount}</td>
                       <td>
