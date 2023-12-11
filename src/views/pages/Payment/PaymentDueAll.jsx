@@ -17,25 +17,27 @@ const PaymentDueAll = () => {
   const queryParams = new URLSearchParams(window.location.search);
 
   // Get the values of 'user' and 'id' parameters
-  const user = queryParams.get("building");
-  const id = queryParams.get("project");
-  console.log({ us: user, ID: id });
+  const building = queryParams.get('building');
+  const project = queryParams.get('project');
+  console.log({ us: building, ID: project });
   const getData = async () => {
-    const res = await axios.get(
-      `https://growbuild-jg.onrender.com/api/get/payment/due/detail/${id}/${user}`
-    );
-    if (res.status === 200) {
-      setTotal(res.data);
-      console.log(res.data);
+    if (building && project) {
+      const res = await axios.get(
+        `https://growbuild-jg.onrender.com/api/get/payment/due/detail/${project}/${building}`
+      );
+      if (res.status === 200) {
+        setTotal(res.data);
+        console.log(res.data);
+      }
+      setpageData({ ...pageData, loading: false });
     }
-    setpageData({ ...pageData, loading: false });
   };
   useEffect(() => {
     setTimeout(() => {
-        getData();
+      getData();
     }, 2000)
   }, []);
-  
+
   if (!pageData.loading && total !== null)
     return (
       <>
