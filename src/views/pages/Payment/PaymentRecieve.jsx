@@ -279,11 +279,15 @@ const PaymentRecieve = () => {
         <div className='col-md-4 col-12 mb-2'>
           {buyerMaster.Project != null && buyerMaster.Building != null ?
             <>
+              <Link to={`/installment/view?project=${buyerMaster.Project}&&building=${buyerMaster.Building}`} className="btn btn-primary mx-1 my-1" target="_blank">Installment Slip</Link>
+              <Link to={`/all/booking?project=${buyerMaster.Project}&&building=${buyerMaster.Building}&&single=false`} className="btn btn-primary mx-1 my-1" target="_blank">View All Bookings</Link>
               <Link to={`/payment/all?project=${buyerMaster.Project}&&building=${buyerMaster.Building}`} className="btn btn-primary mx-1 my-1" target="_blank">View All Payments</Link>
-              <Link to={`/payment/due/all?project=${buyerMaster.Project}&&building=${buyerMaster.Building}`} className="btn btn-primary mx-1 my-1">View All Dues</Link>
+              <Link to={`/due/payment?project=${buyerMaster.Project}&&building=${buyerMaster.Building}`} className="btn btn-primary mx-1 my-1" target="_blank" >View All Dues</Link>
             </>
             :
             <>
+            <Link  title="Select Project and Building" disabled className="btn btn-primary mx-1 my-1" >Installment Slip</Link>
+            <Link  title="Select Project and Building" disabled className="btn btn-primary mx-1 my-1">View All Bookings</Link>
               <Link title="Select Project and Building" disabled className="btn btn-primary mx-1 my-1">View All Payments</Link>
               <Link title="Select Project and Building" disabled className="btn btn-primary mx-1 my-1">View All Dues</Link>
             </>

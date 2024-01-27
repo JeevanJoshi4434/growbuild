@@ -8,10 +8,6 @@ import axios from "axios"
 import { useEffect } from "react"
 import Cookies from 'js-cookie';
 const App = props => {
-  setInterval(() => {
-    const token = Cookies.get('token');
-    console.log(token);
-  }, 2000);
   useEffect(() => {
     const checkToken = async () => {
       try {

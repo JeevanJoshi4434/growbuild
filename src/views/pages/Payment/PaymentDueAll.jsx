@@ -1,7 +1,6 @@
-import React from "react";
-import { useState } from "react";
+import React,{ useState,useEffect } from "react";
 import axios from "axios";
-import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import userImg from '../../../layouts/components/utils/logo.jpeg';
 const PaymentDueAll = () => {
   const [pageData, setpageData] = useState({
@@ -12,16 +11,16 @@ const PaymentDueAll = () => {
   const handlePrint = () => {
     window.print();
   };
-
+  const location = useLocation();
   // Parse the query parameters from the location object
-  const queryParams = new URLSearchParams(window.location.search);
-
+  const queryParams = new URLSearchParams(location.search);
   // Get the values of 'user' and 'id' parameters
-  const building = queryParams.get('building');
-  const project = queryParams.get('project');
-  console.log({ us: building, ID: project });
-  const getData = async () => {
-    if (building && project) {
+    const building = queryParams.get('building');
+    const project = queryParams.get('project');
+    console.log({ us: building, ID: project });
+
+  const getData = async() => {
+    if (building.length > 0 && project.length > 0) {
       const res = await axios.get(
         `https://growbuild-jg.onrender.com/api/get/payment/due/detail/${project}/${building}`
       );
