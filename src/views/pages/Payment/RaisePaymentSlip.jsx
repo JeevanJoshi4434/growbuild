@@ -34,7 +34,7 @@ const PaymentAll = () => {
     );
     if (res.status === 200) {
       let data = res.data;
-      if (data.length > 0 && data.dataArray.length > 0) {
+      if ( data.dataArray.length > 0) {
         let filteredData = data.dataArray.filter((i) => {
           if (i.pendingDemands.length !== 0) return i;
         })
