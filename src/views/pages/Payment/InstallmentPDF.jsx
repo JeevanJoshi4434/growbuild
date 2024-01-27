@@ -107,7 +107,7 @@ const InstallmentPDF = (props) => {
                         <p>Client Number: {data?.Application_Number}</p>
 
                         <p>To:</p>
-                        <p>{data?.name} {data?.secondP.replace(" ", '') !== '' ? ` & ${data?.secondP}` : ''}, Purchaser</p>
+                        <p>{data?.name} {data?.secondP?.replace(" ", '') !== '' ? ` & ${data?.secondP}` : ''}, Purchaser</p>
                         <p>Address: {data?.currentAddress}</p>
 
                         <p>Dear Sir/Madam,</p>
