@@ -1,10 +1,10 @@
-import React from "react"
-import { Card, CardBody } from "reactstrap"
-import { Award } from "react-feather"
+import React from "react";
+import { Card, CardBody } from "reactstrap";
+import { Award } from "react-feather";
 
-import decorLeft from "../../../assets/img/elements/decore-left.png"
-import decorRight from "../../../assets/img/elements/decore-right.png"
-import { FormattedHTMLMessage } from "react-intl"
+import decorLeft from "../../../assets/img/elements/decore-left.png";
+import decorRight from "../../../assets/img/elements/decore-right.png";
+import { FormattedHTMLMessage } from "react-intl";
 
 class SalesCard extends React.Component {
   render() {
@@ -19,15 +19,18 @@ class SalesCard extends React.Component {
             </div>
           </div>
           <div className="award-info text-center">
-            <h1 className="mb-2 text-white"> Welcome <br/> Jay Mazumdar</h1>
-            <p className="m-auto mb-0 w-75">
+            <h1 className="mb-2 text-white">
+              {" "}
+              Welcome <br /> Jay Mazumdar
+            </h1>
+            {/* <p className="m-auto mb-0 w-75">
               You have done <strong>57.6%</strong> more sales today. Check your
               new badge in your profile.
-            </p>
+            </p> */}
           </div>
         </CardBody>
       </Card>
-    )
+    );
   }
 }
-export default SalesCard
+export default SalesCard;
