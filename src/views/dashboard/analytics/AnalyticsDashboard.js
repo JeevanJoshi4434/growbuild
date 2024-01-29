@@ -39,18 +39,22 @@ class AnalyticsDashboard extends React.Component {
           </Col>
         </Row>
         <Row className="match-height">
-          <Col md="6" sm="12">
-            <AvgSession labelColor={$label_color} primary={$primary} />
-          </Col>
-          <Col md="6" sm="12">
-            <SupportTracker
+          <Col lg="6" md="6" sm="12">
+            <SalesStat
+              strokeColor={$stroke_color}
+              infoLight={$info_light}
               primary={$primary}
-              danger={$danger}
-              white={$white}
+              info={$info}
             />
           </Col>
+          <Col lg="3" md="6" sm="12">
+            <SuberscribersGained />
+          </Col>
+          <Col lg="3" md="6" sm="12">
+            <OrdersReceived />
+          </Col>
         </Row>
-        <Row className="match-height">
+        {/* <Row className="match-height">
           <Col lg="4">
             <ProductOrders
               primary={$primary}
@@ -61,14 +65,7 @@ class AnalyticsDashboard extends React.Component {
               dangerLight={$danger_light}
             />
           </Col>
-          <Col lg="4">
-            <SalesStat
-              strokeColor={$stroke_color}
-              infoLight={$info_light}
-              primary={$primary}
-              info={$info}
-            />
-          </Col>
+
           <Col lg="4">
             <ActivityTimeline />
           </Col>
@@ -77,7 +74,7 @@ class AnalyticsDashboard extends React.Component {
           <Col sm="12">
             <DispatchedOrders />
           </Col>
-        </Row>
+        </Row> */}
       </React.Fragment>
     );
   }
