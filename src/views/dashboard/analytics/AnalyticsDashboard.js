@@ -25,7 +25,6 @@ let $primary = "#7367F0",
 
 class AnalyticsDashboard extends React.Component {
   render() {
-    
     return (
       <React.Fragment>
         <Row className="match-height">
@@ -74,11 +73,11 @@ class AnalyticsDashboard extends React.Component {
             <ActivityTimeline />
           </Col>
         </Row>
-        {/* <Row>
+        <Row>
           <Col sm="12">
             <DispatchedOrders />
           </Col>
-        </Row> */}
+        </Row>
       </React.Fragment>
     );
   }
