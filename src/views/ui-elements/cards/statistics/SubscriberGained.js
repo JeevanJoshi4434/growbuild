@@ -7,9 +7,9 @@ class SubscriberGained extends React.Component {
   render() {
     return (
       <StatisticsCard
-        icon={<Users className="primary" size={22} />}
-        stat="92.6k"
-        statTitle="Subscribers Gained"
+        icon={this.props.Icon}
+        stat={this.props.data}
+        statTitle={this.props.Title}
         options={subscribersGained}
         series={subscribersGainedSeries}
         type="area"

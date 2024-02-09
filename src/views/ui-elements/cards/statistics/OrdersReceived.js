@@ -7,10 +7,10 @@ class OrdersReceived extends React.Component {
   render() {
     return (
       <StatisticsCard
-        icon={<Package className="warning" size={22} />}
+        icon={this.props.Icon}
         iconBg="warning"
-        stat="97.5K"
-        statTitle="Orders Received"
+        stat={this.props.data}
+        statTitle={this.props.Title}
         options={ordersReceived}
         series={ordersReceivedSeries}
         type="area"

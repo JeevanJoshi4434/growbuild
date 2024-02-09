@@ -108,7 +108,7 @@ class Sales extends React.Component {
                 marginRight: "5px"
               }}
             />
-            <span>Sales</span>
+            <span>Booking</span>
           </div>
           <div className="item-info d-inline-block">
             <div
@@ -121,7 +121,7 @@ class Sales extends React.Component {
                 marginRight: "5px"
               }}
             />
-            <span>Visits</span>
+            <span>Available</span>
           </div>
           <Chart
             options={this.state.options}
