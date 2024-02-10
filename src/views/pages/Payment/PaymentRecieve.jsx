@@ -95,7 +95,7 @@ const PaymentRecieve = () => {
   return (
     <>
       <form
-        className="row px-4 py-4 mx-2 my-2 shadow-lg needs-validation"
+        className="row px-4 py-4 mx-2 my-2 shadow-lg needs-validation d-flex justify-content-center"
         novalidate
       >
         <h3 className="text-alternate text-primary">Payment Master</h3>
@@ -276,7 +276,7 @@ const PaymentRecieve = () => {
             </select>
           </div>
         </div>
-        <div className='col-md-4 col-12 mb-2'>
+        <div className='col-md-12 col-12 my-3 px-2 py-2 shadow'>
           {buyerMaster.Project != null && buyerMaster.Building != null ?
             <>
               <Link to={`/installment/view?project=${buyerMaster.Project}&&building=${buyerMaster.Building}`} className="btn btn-primary mx-1 my-1" target="_blank">Installment Slip</Link>
