@@ -14,11 +14,11 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import axios from "axios";
 import * as Icon from "react-feather";
 import classnames from "classnames";
-import ReactCountryFlag from "react-country-flag";
+// import ReactCountryFlag from "react-country-flag";
 import Autocomplete from "../../../components/@vuexy/autoComplete/AutoCompleteComponent";
 import { useAuth0 } from "../../../authServices/auth0/auth0Service";
 import { history } from "../../../history";
-import { IntlContext } from "../../../utility/context/Internationalization";
+// import { IntlContext } from "../../../utility/context/Internationalization";
 import userImg from "../../components/utils/logo.jpeg";
 import { logoutUser } from "../../../views/pages/authentication/login/logout";
 const handleNavigation = (e, path) => {
