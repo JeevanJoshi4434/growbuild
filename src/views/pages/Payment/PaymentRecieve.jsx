@@ -190,7 +190,7 @@ const PaymentRecieve = () => {
             </select>
           </div>
         </div>
-        <div className="col-md-4 col-12 mb-2">
+        <div className="col-md-6 col-12 mb-2">
           <p className="text-alternate">Select Floor</p>
           <div className="input-group">
             <select
@@ -220,7 +220,7 @@ const PaymentRecieve = () => {
             </select>
           </div>
         </div>
-        <div className="col-md-4 col-12 mb-2">
+        <div className="col-md-6 col-12 mb-2">
           <p className="text-alternate">Select Unit</p>
           <div className="input-group">
             <select
@@ -276,7 +276,7 @@ const PaymentRecieve = () => {
             </select>
           </div>
         </div>
-        <div className='col-md-4 col-12 mb-2'>
+        <div className='col-md-12 col-12 mb-2'>
           {buyerMaster.Project != null && buyerMaster.Building != null ?
             <>
               <Link to={`/installment/view?project=${buyerMaster.Project}&&building=${buyerMaster.Building}`} className="btn btn-primary mx-1 my-1" target="_blank">Installment Slip</Link>
