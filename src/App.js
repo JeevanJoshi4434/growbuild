@@ -12,7 +12,7 @@ const App = props => {
     const checkToken = async () => {
       try {
         const res = await axios.get(`https://growbuild-jg.onrender.com/api/all/project`)
-        if (res.status !== 200) {
+        if (res.status !== 200 || res.status !== 304) {
           if (window.location.pathname.slice(0, 12) !== '/pages/login') {
             let redirectPath = `${window.location.pathname}${window.location.search}`;
             let route = `/pages/login?redirect=${redirectPath}`;
@@ -29,7 +29,7 @@ const App = props => {
 
       } catch (error) {
         // console.error('Error while checking token:', error);
-        if (error.response.status !== 500) {
+        if (error.response.status !== 500 || error.response.status !== 304) {
           if (window.location.pathname.slice(0, 12) !== '/pages/login') {
             let redirectPath = `${window.location.pathname}${window.location.search}`;
             let route = `/pages/login?redirect=${redirectPath}`;
