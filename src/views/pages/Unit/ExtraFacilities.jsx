@@ -279,11 +279,11 @@ const DataTableCustom = (props) => {
 
                 </ModalBody>
                 <ModalFooter>
+                  <Button color="warning" onClick={() => toggleModal()}>
+                    cancel
+                  </Button>{" "}
                    <Button color="primary" onClick={() => updateModal()}>
                     Add
-                  </Button>{" "}
-                  <Button color="primary" onClick={() => toggleModal()}>
-                    cancel
                   </Button>{" "}
                 </ModalFooter>
               </Modal>
