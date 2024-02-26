@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import {
   Navbar,
   UncontrolledDropdown,
@@ -16,9 +16,9 @@ import {
   TabPane,
   Nav,
   NavItem,
-  NavLink
-} from "reactstrap"
-import classnames from "classnames"
+  NavLink,
+} from "reactstrap";
+import classnames from "classnames";
 import {
   Eye,
   Code,
@@ -37,26 +37,26 @@ import {
   File,
   Power,
   User,
-  Heart
-} from "react-feather"
-import { navbarBasic } from "./NavbarSourceCode"
-import userImg from "../../../assets/img/portrait/small/avatar-s-11.jpg"
-import PerfectScrollbar from "react-perfect-scrollbar"
+  Heart,
+} from "react-feather";
+import { navbarBasic } from "./NavbarSourceCode";
+import userImg from "../../../assets/img/portrait/small/avatar-s-11.jpg";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
-import ReactCountryFlag from "react-country-flag"
-import { logoutUser } from "../../../views/pages/authentication/login/logout"
-import Cookies from "js-cookie"
+import ReactCountryFlag from "react-country-flag";
+import { logoutUser } from "../../../views/pages/authentication/login/logout";
+import Cookies from "js-cookie";
 
 class NavbarBasic extends React.Component {
   state = {
-    activeTab: "1"
-  }
+    activeTab: "1",
+  };
 
   toggleTab = tab => {
     if (this.state.activeTab !== tab) {
-      this.setState({ activeTab: tab })
+      this.setState({ activeTab: tab });
     }
-  }
+  };
 
   render() {
     return (
@@ -69,10 +69,10 @@ class NavbarBasic extends React.Component {
                 <NavItem>
                   <NavLink
                     className={classnames({
-                      active: this.state.activeTab === "1"
+                      active: this.state.activeTab === "1",
                     })}
                     onClick={() => {
-                      this.toggleTab("1")
+                      this.toggleTab("1");
                     }}
                   >
                     <Eye size={15} />
@@ -81,10 +81,10 @@ class NavbarBasic extends React.Component {
                 <NavItem>
                   <NavLink
                     className={classnames({
-                      active: this.state.activeTab === "2"
+                      active: this.state.activeTab === "2",
                     })}
                     onClick={() => {
-                      this.toggleTab("2")
+                      this.toggleTab("2");
                     }}
                   >
                     <Code size={15} />
@@ -230,7 +230,7 @@ class NavbarBasic extends React.Component {
                               <PerfectScrollbar
                                 className="media-list overflow-hidden position-relative"
                                 options={{
-                                  wheelPropagation: false
+                                  wheelPropagation: false,
                                 }}
                               >
                                 <div className="d-flex justify-content-between">
@@ -427,26 +427,28 @@ class NavbarBasic extends React.Component {
                                   Edit Profile
                                 </span>
                               </DropdownItem>
-                              <DropdownItem tag="a" href="#">
+                              {/* <DropdownItem tag="a" href="#">
                                 <Mail size={14} className="mr-50" />
                                 <span>My Inbox</span>
-                              </DropdownItem>
-                              <DropdownItem tag="a" href="#">
+                              </DropdownItem> */}
+                              {/* <DropdownItem tag="a" href="#">
                                 <CheckSquare size={14} className="mr-50" />
                                 <span>Tasks</span>
-                              </DropdownItem>
-                              <DropdownItem tag="a" href="#">
+                              </DropdownItem> */}
+                              {/* <DropdownItem tag="a" href="#">
                                 <MessageSquare size={14} className="mr-50" />
                                 <span>Chats</span>
-                              </DropdownItem>
-                              <DropdownItem tag="a" href="#">
+                              </DropdownItem> */}
+                              {/* <DropdownItem tag="a" href="#">
                                 <Heart size={14} className="mr-50" />
                                 <span>WishList</span>
-                              </DropdownItem>
+                              </DropdownItem> */}
                               <DropdownItem divider />
                               <DropdownItem tag="a" href="#">
                                 <Power size={14} className="mr-50" />
-                                <span onClick={()=>Cookies.remove('token')} >Log Out</span>
+                                <span onClick={() => Cookies.remove("token")}>
+                                  Log Out
+                                </span>
                               </DropdownItem>
                             </DropdownMenu>
                           </UncontrolledDropdown>
@@ -463,7 +465,7 @@ class NavbarBasic extends React.Component {
           </CardBody>
         </Card>
       </React.Fragment>
-    )
+    );
   }
 }
-export default NavbarBasic
+export default NavbarBasic;
