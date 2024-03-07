@@ -741,6 +741,75 @@ const SetBooking = () => {
               <button onClick={()=>getTotalPrice()} class="btn btn-outline-primary btn-md " type="button">Fetch Total Price</button>
             </div>
           </div>
+          <div className="row">
+            <h5 className="text-alternate">Maintenance Charges</h5>
+            <hr />
+            <div className="col-md-3 col-12">
+               <p className="text-alternate">Total Saleable Area</p>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="totalSaleableArea"
+                  name="totalSaleableArea"
+                  value={}
+                  onChange={}
+                  required=""
+                  disabled
+                  placeholder="Can't Find"
+                />
+              </div>
+            </div>
+            <div className="col-md-3 col-12">
+               <p className="text-alternate">Charges Per sqft</p>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="totalSaleableArea"
+                  name="totalSaleableArea"
+                  value={}
+                  onChange={}
+                  required=""
+                  disabled
+                  placeholder="Can't Find"
+                />
+              </div>
+            </div>
+            <div className="col-md-3 col-12">
+               <p className="text-alternate">Total No Of Year</p>
+              <div className="input-group">
+                <input
+                  type="number"
+                  className="form-control"
+                  id="totalSaleableArea"
+                  name="totalSaleableArea"
+                  value={}
+                  onChange={}
+                  required=""
+                  disabled
+                  placeholder="Can't Find"
+                />
+              </div>
+            </div>
+            <div className="col-md-3 col-12">
+               <p className="text-alternate">Total Maintenance Charge</p>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="totalSaleableArea"
+                  name="totalSaleableArea"
+                  value={}
+                  onChange={}
+                  required=""
+                  disabled
+                  placeholder="Can't Find"
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate"> Booking Date</p>
             <div className="input-group">
