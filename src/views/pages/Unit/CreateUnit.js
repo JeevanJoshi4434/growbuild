@@ -238,9 +238,10 @@ const CreateUnit = () => {
       let total = document.getElementById('pricewithtax');
       let sgst = document.getElementById('sgst');
       let cgst = document.getElementById('cgst');
-
-      total.value = Saleable.value * sqft.value;
-      total.value = parseFloat(total.value) + parseFloat(total.value)*(parseFloat(sgst.value/100)+parseFloat(cgst.value/100));
+      let price = 0;
+      price = parseFloat(Saleable.value * sqft.value);
+      price = parseFloat(price) + (parseFloat(price)*(parseFloat(sgst.value/100)+parseFloat(cgst.value/100)));
+      total.value = price.toFixed(2);
     }
   }
 
@@ -434,6 +435,7 @@ const CreateUnit = () => {
             <div className="input-group">
               <input
                 type="number"
+                step={0.01}
                 aria-label="price"
                 placeholder="Enter Price"
                 className="form-control"
@@ -479,6 +481,7 @@ const CreateUnit = () => {
             <div className="input-group">
               <input
                 type="number"
+                step="0.01"
                 aria-label="Total Price"
                 placeholder="Total Price"
                 className="form-control"

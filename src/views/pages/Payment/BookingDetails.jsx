@@ -25,7 +25,7 @@ const BookingDetails = () => {
       const getData = async () => {
         let url = `https://growbuild-jg.onrender.com/api/get/all/demand/booking/detail?building=${building}&&project=${project}&&single=false`; 
         const res = await axios.get(
-          `http://localhost:4040/api/get/all/demand/booking/detail?building=655e24f42be710ebcca8f4dd&&project=65570e25bdf0b948660141c8&&single=false`
+          url
         );
         if (res.status === 200) {
           setTotal(res.data);

@@ -1,11 +1,11 @@
 import axios from "axios";
 import React from "react";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const RaiseDemand = () => {
 
   const [demand, setDemand] = useState({
-    Project:'',Building:'',paymentPlan:''
+    Project: '', Building: '', paymentPlan: ''
   })
   const [allBuilding, setAllBuilding] = useState(null);
   const [DemandList, setDemandList] = useState([]);
@@ -50,12 +50,21 @@ const RaiseDemand = () => {
     }
   }
 
-  const updateDemand = async()=>{
-    const res = await axios.put(process.env.REACT_APP_PORT + `/api/update/demand/${demand.paymentPlan}`,
-      {Status:'completed',onlyStatus:true}
-    );
-    if(res.status===200){
-      getDetail(demand.Building);
+  const updateDemand = async () => {
+    try {
+
+      const res = await axios.put(process.env.REACT_APP_PORT + `/api/update/demand/${demand.paymentPlan}`,
+        { Status: 'completed', onlyStatus: true }
+      );
+      if (res.status === 200) {
+        alert("Demand Raised successfully");
+        getDetail(demand.Building);
+      }else{
+        alert("Something went wrong, try again later.");
+      }
+
+    } catch (error) {
+      alert("Something went wrong, try again later.");
     }
   }
   return (
@@ -115,7 +124,7 @@ const RaiseDemand = () => {
             <p class="text-alternate">Select Payment Plan</p>
             <div class="input-group">
               <select class="form-control" id="paymentPlan" name="paymentPlan" onChange={handleInputs} value={demand.paymentPlan}>
-                { allBuilding === null && <option value=''>Select Building First</option>}
+                {allBuilding === null && <option value=''>Select Building First</option>}
                 <option value='' >Select Payment Plan</option>
                 {
                   DemandList.length > 0 && DemandList.map((i) => {
@@ -129,7 +138,7 @@ const RaiseDemand = () => {
           </div>
           <div class="col-md-4 col-12 mb-2">
             <p class="text-alternate">Raise Demands For this Plan</p>
-             <button type="button" disabled={demand.paymentPlan.length > 0 ? false : true} onClick={updateDemand} class="btn btn-success">
+            <button type="button" disabled={demand.paymentPlan.length > 0 ? false : true} onClick={updateDemand} class="btn btn-success">
               Set Plan Active
             </button>
           </div>

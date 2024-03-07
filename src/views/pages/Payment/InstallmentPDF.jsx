@@ -6,7 +6,7 @@ import printCss from "./print.css";
 const InstallmentPDF = (props) => {
   const { data, project, building } = props;
   const date = new Date(data?.list[data?.list.length - 1].onDate);
-  const amount = data?.list[data?.list.length - 1].price?.toFixed(0);
+  const amount = parseInt(data?.list[data?.list.length - 1].price);
   const convertToIndianCount = (number) => {
     const oneToNineteen = [
       "",
@@ -198,7 +198,7 @@ const InstallmentPDF = (props) => {
                       </td>
                       <td>{i.demandAmount}%</td>
                       <td>{date.toLocaleDateString()}</td>
-                      <td>{i.price?.toFixed(2)}</td>
+                      <td>{parseInt(i.price).toFixed(2)}</td>
                     </tr>
                   );
                 })}

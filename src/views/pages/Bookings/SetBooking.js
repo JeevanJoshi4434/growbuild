@@ -179,12 +179,12 @@ const SetBooking = () => {
       const totalPrice = state?.selectedFacilities?.reduce((total, facility) => {
         // Convert totalPrice to a number and add it to the total
         const facilityTotalPrice = parseFloat(facility?.totalPrice) || 0;
-        return total + facilityTotalPrice;
+        return parseFloat(total + facilityTotalPrice);
       }, 0);
 
-      return totalPrice;
+      return parseFloat(totalPrice).toFixed(2);
     }
-    return 0; // Return 0 if no facilities are selected
+    return 0.00; // Return 0 if no facilities are selected
   };
   const [isEdit, setIsEdit] = useState(false);
   const [AllBooking, setAllBooking] = useState(null);
@@ -502,7 +502,7 @@ const SetBooking = () => {
     }
   }
 
-  const getPrice = async (id) => {
+  const getPrice = async (id,unit_price) => {
     const data = {
       Project: Booking.Project,
       building: buildingId.value
@@ -514,16 +514,18 @@ const SetBooking = () => {
       }
     });
     if (res.data?.status === 200) {
-      setBooking({ ...Booking, parking_price: res.data?.price });
-      let arr = res.data;
-      setUnit(res.data);
+      setBooking({ ...Booking, parking_price: res.data.price, unitPrice:unit_price });
     } else {
-      setBooking({ ...Booking, parking_price:0});
+      setBooking({ ...Booking, parking_price:0, unitPrice:unit_price });
     }
   }
   const unitPriceFetch= async(id)=>{
+    let price = 0.00;
     const resp = await axios.get(`${process.env.REACT_APP_PORT}/api/unit/${id}`);
-    setBooking({...Booking, unitPrice:resp.data?.pricewithtax});
+    if (resp.status === 200 || resp.status === 304) {
+      price = resp.data.pricewithtax;
+    }
+    await getPrice(id,price);
   }
 
   const closeEdit = () => {
@@ -531,11 +533,11 @@ const SetBooking = () => {
     setIsEdit(false);
   }
 
-  const getTotalPrice = () => {
-    let price = Booking?.parking_price !== null ? parseFloat(calculateTotalPrice()) + parseFloat(Booking.parking_price * Booking.parking) : calculateTotalPrice();
+  const getTotalPrice = async() => {
+    let price = (Booking?.parking_price !== null && Booking?.parking >= 1) ? parseFloat(calculateTotalPrice()) + parseFloat((Booking.parking_price * Booking.parking)+((Booking.parking_price * Booking.parking)*0.01)) : calculateTotalPrice();
     if(Booking.demandRate !== null && Booking.unitPrice !== null){
       price = parseFloat(price) +(parseFloat(Booking.unitPrice));
-      setBooking({ ...Booking, totalAmount: price})
+      setBooking({ ...Booking, totalAmount: price.toFixed(2)})
     }
   }
 
@@ -615,7 +617,7 @@ const SetBooking = () => {
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Select Unit</p>
             <div className="input-group">
-              <select className="form-control" id="unit" name="unit" onChange={(e) => { handleInputs(e); getPrice(e.target.value);unitPriceFetch(e.target.value); }} value={Booking.unit}>
+              <select className="form-control" id="unit" name="unit" onChange={async(e) => { handleInputs(e); await unitPriceFetch(e.target.value); }} value={Booking.unit}>
                 {Booking.Project === null && Booking.building === null && <option value={null} name={null}>Select Project First</option>}
                 {Booking.building === null && Booking.Project !== null && <option value={null} name={null}>Select Building First</option>}
                 {Booking.building !== null && Booking.Project !== null && allUnits === null && <option value={null} name={null}>Loading...</option>}
@@ -667,7 +669,20 @@ const SetBooking = () => {
           </div>
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Parking Price</p>
-            {Booking.parking_price !== null ? <p className="text-alternate" >{Booking.parking_price}</p> : <p className="text-alternate">Loading...</p>}
+            {Booking.parking_price !== null ?
+            <input
+            type="number"
+            aria-label="Parking Price"
+            placeholder="Parking Price"
+            className="form-control"
+            id="parking_price"
+            step="0.01"
+            name="parking_price"
+            required=""
+            value={Booking.parking_price}
+            onChange={(e) => { handleInputs(e); }}
+          />
+           : <p className="text-alternate">Loading...</p>}
           </div>
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Booking Price</p>
