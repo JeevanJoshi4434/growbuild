@@ -132,6 +132,7 @@ const navigationConfig = [
     permissions: ["admin", "editor"],
     navLink: "/booking/create",
   },
+  
   {
     id: "bookingStatus",
     title: "Booking Status",
@@ -172,7 +173,14 @@ const navigationConfig = [
   //   permissions: ["admin", "editor"],
   //   navLink: "/deemand/all",
   // },
-
+  {
+    id: "Maintenance",
+    title: "Maintenance",
+    type: "item",
+    icon: <Icon.Paperclip size={20} />,
+    permissions: ["admin", "editor"],
+    navLink: "/maintenance",
+  },
   {
     id: "paymentMaster",
     title: "Payment Master",

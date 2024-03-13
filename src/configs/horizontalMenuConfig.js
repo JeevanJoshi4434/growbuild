@@ -166,6 +166,14 @@ const horizontalMenuConfig = [
         permissions: ["admin", "editor"],
         navLink: "/demands/raise",
       },
+      {
+        id: "Maintenance",
+        title: "Maintenance",
+        type: "item",
+        icon: <Icon.Paperclip size={20} />,
+        permissions: ["admin", "editor"],
+        navLink: "/maintenance",
+      },
       // {
       //   id: "All stages",
       //   title: "All Stages",

@@ -189,7 +189,7 @@ const SetBooking = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [AllBooking, setAllBooking] = useState(null);
   const [Booking, setBooking] = useState({
-    Project: null, building: null, floor: null, unit: null, flat: null, parking: null, booking_price: null, booking_date: null, allotment_date: null, agreement_date: null, first_applicant_name: null, first_applicant_father_name: null, first_applicant_husband_name: null, first_applicant_permanentAddress: null, first_applicant_correspondAddress: null, first_applicant_contactNumber: null, first_applicant_email: null, first_applicant_dob: null, first_applicant_AadharNumber: null, first_applicant_pan_number: null, first_applicant_City: null, first_applicant_police_station: null, first_applicant_country: null, first_applicant_occupation: null, first_applicant_religion: null, first_applicant_status: null, second_applicant_name: null, second_applicant_father_name: null, second_applicant_husband_name: null, second_applicant_contact_number: null, second_applicant_email: null, second_applicant_dob: null, second_applicant_pan_number: null, second_applicant_occupation: null, second_applicant_address: null, second_applicant_relation_with_first_applicant: null, third_applicant_name: null, third_applicant_phone_number: null, fourth_applicant_name: null, fourth_applicant_phone_number: null, second_applicant_adhar_number: null, id: null, price_with_tax: null, parking_price: null, totalAmount: null,bookingPrice:null,unitPrice:null,demandRate:null
+    Project: null, building: null, floor: null, unit: null, flat: null, parking: null, booking_price: null, booking_date: null, allotment_date: null, agreement_date: null, first_applicant_name: null, first_applicant_father_name: null, first_applicant_husband_name: null, first_applicant_permanentAddress: null, first_applicant_correspondAddress: null, first_applicant_contactNumber: null, first_applicant_email: null, first_applicant_dob: null, first_applicant_AadharNumber: null, first_applicant_pan_number: null, first_applicant_City: null, first_applicant_police_station: null, first_applicant_country: null, first_applicant_occupation: null, first_applicant_religion: null, first_applicant_status: null, second_applicant_name: null, second_applicant_father_name: null, second_applicant_husband_name: null, second_applicant_contact_number: null, second_applicant_email: null, second_applicant_dob: null, second_applicant_pan_number: null, second_applicant_occupation: null, second_applicant_address: null, second_applicant_relation_with_first_applicant: null, third_applicant_name: null, third_applicant_phone_number: null, fourth_applicant_name: null, fourth_applicant_phone_number: null, second_applicant_adhar_number: null, id: null, price_with_tax: null, parking_price: null, totalAmount: null,bookingPrice:null,unitPrice:null,demandRate:null,area:0,charges:0,yearDuration:0,MaintenanceCharges:0
   })
   const uploadBooking = async () => {
     const res = await axios.post(process.env.REACT_APP_PORT + '/api/create/booking', {
@@ -237,7 +237,11 @@ const SetBooking = () => {
       totalAmount: Booking?.totalAmount,
       extra_facility: state?.selectedFacilities,
       bookingPrice:Booking?.booking_price,
-      unitPrice:Booking?.unitPrice
+      unitPrice:Booking?.unitPrice,
+      area:Booking?.area,
+      charges:Booking?.charges,
+      yearDuration:Booking?.yearDuration,
+      MaintenanceCharges:Booking?.MaintenanceCharges,
     })
     if (res.status === 200) {
       window.alert("Booking created successfully");
@@ -359,7 +363,11 @@ const SetBooking = () => {
       totalAmount: data?.totalAmount,
       bookingPrice:data?.bookingPrice,
       unitPrice:data?.unitPrice,
-      parking_price:data.price
+      parking_price:data.price,
+      area:data?.maintenance[0]?.area || 0,
+      charges:data?.maintenance[0]?.chargesPerSqFt || 0,
+      yearDuration: data?.maintenance[0]?.Duration || 0,
+      MaintenanceCharges: data?.maintenance[0]?.MaintenanceCharges || 0
     });
     setIsEdit(true)
     await getBuildings(data.Project);
@@ -412,7 +420,11 @@ const SetBooking = () => {
       price_with_tax: data?.price_with_tax,
       totalAmount: data?.totalAmount,
       bookingPrice:data?.bookingPrice,unitPrice:data?.unitPrice,
-      parking_price: data?.price
+      parking_price: data?.price,
+      area:data?.maintenance[0]?.area || 0,
+      charges:data?.maintenance[0]?.chargesPerSqFt || 0,
+      yearDuration: data?.maintenance[0]?.Duration || 0,
+      MaintenanceCharges: data?.maintenance[0]?.MaintenanceCharges || 0
     });
     setState({ ...state, data: data })
   }
@@ -492,7 +504,11 @@ const SetBooking = () => {
       totalAmount: Booking?.totalAmount,
       extra_facility: state?.selectedFacilities,
       bookingPrice:Booking?.booking_price,
-      unitPrice:Booking?.unitPrice
+      unitPrice:Booking?.unitPrice,
+      area:Booking?.area,
+      charges:Booking?.charges,
+      yearDuration:Booking?.yearDuration,
+      MaintenanceCharges:Booking?.MaintenanceCharges
     })
     if (res.status === 200) {
       swal('Building Updated successfully!', 'success')
@@ -502,7 +518,7 @@ const SetBooking = () => {
     }
   }
 
-  const getPrice = async (id,unit_price) => {
+  const getPrice = async (id,unit_price,salablePrice,SalableArea) => {
     const data = {
       Project: Booking.Project,
       building: buildingId.value
@@ -514,22 +530,33 @@ const SetBooking = () => {
       }
     });
     if (res.data?.status === 200) {
-      setBooking({ ...Booking, parking_price: res.data.price, unitPrice:unit_price });
+      setBooking({ ...Booking, parking_price: res.data.price, unitPrice:unit_price,area:SalableArea,charges:salablePrice.toFixed(2) });
     } else {
-      setBooking({ ...Booking, parking_price:0, unitPrice:unit_price });
+      setBooking({ ...Booking, parking_price:0, unitPrice:unit_price,area:SalableArea,charges:salablePrice.toFixed(2) });
     }
+  }
+
+  const onMaintenanceChange = (e)=>{
+    let value = e.target.value;
+    let totalPrice = (Booking.area * Booking.charges)*value;
+    setBooking({ ...Booking, yearDuration:value, MaintenanceCharges:totalPrice.toFixed(2) });
   }
   const unitPriceFetch= async(id)=>{
     let price = 0.00;
     const resp = await axios.get(`${process.env.REACT_APP_PORT}/api/unit/${id}`);
+    let SalablePrice = 0;
+    let SalableArea = 0;
     if (resp.status === 200 || resp.status === 304) {
       price = resp.data.pricewithtax;
+      SalablePrice = resp.data.price;
+      SalableArea = resp.data.total_area_this_unit
+
     }
-    await getPrice(id,price);
+    await getPrice(id,price,SalablePrice,SalableArea);
   }
 
   const closeEdit = () => {
-    setBooking({ ...Booking, Project: null, building: null, floor: null, unit: null, flat: null, parking: null, booking_price: null, booking_date: null, allotment_date: null, agreement_date: null, first_applicant_name: null, first_applicant_father_name: null, first_applicant_husband_name: null, first_applicant_permanentAddress: null, first_applicant_correspondAddress: null, first_applicant_contactNumber: null, first_applicant_email: null, first_applicant_dob: null, first_applicant_AadharNumber: null, first_applicant_pan_number: null, first_applicant_City: null, first_applicant_police_station: null, first_applicant_country: null, first_applicant_occupation: null, first_applicant_religion: null, first_applicant_status: null, second_applicant_name: null, second_applicant_father_name: null, second_applicant_husband_name: null, second_applicant_contact_number: null, second_applicant_email: null, second_applicant_dob: null, second_applicant_pan_number: null, second_applicant_occupation: null, second_applicant_address: null, second_applicant_relation_with_first_applicant: null, third_applicant_name: null, third_applicant_phone_number: null, fourth_applicant_name: null, fourth_applicant_phone_number: null, second_applicant_adhar_number: null, id: null })
+    setBooking({ ...Booking, Project: null, building: null, floor: null, unit: null, flat: null, parking: null, booking_price: null, booking_date: null, allotment_date: null, agreement_date: null, first_applicant_name: null, first_applicant_father_name: null, first_applicant_husband_name: null, first_applicant_permanentAddress: null, first_applicant_correspondAddress: null, first_applicant_contactNumber: null, first_applicant_email: null, first_applicant_dob: null, first_applicant_AadharNumber: null, first_applicant_pan_number: null, first_applicant_City: null, first_applicant_police_station: null, first_applicant_country: null, first_applicant_occupation: null, first_applicant_religion: null, first_applicant_status: null, second_applicant_name: null, second_applicant_father_name: null, second_applicant_husband_name: null, second_applicant_contact_number: null, second_applicant_email: null, second_applicant_dob: null, second_applicant_pan_number: null, second_applicant_occupation: null, second_applicant_address: null, second_applicant_relation_with_first_applicant: null, third_applicant_name: null, third_applicant_phone_number: null, fourth_applicant_name: null, fourth_applicant_phone_number: null, second_applicant_adhar_number: null, id: null,area:0,charges:0,yearDuration:0,MaintenanceCharges:0 })
     setIsEdit(false);
   }
 
@@ -752,8 +779,7 @@ const SetBooking = () => {
                   className="form-control"
                   id="totalSaleableArea"
                   name="totalSaleableArea"
-                  value={}
-                  onChange={}
+                  value={Booking.area}
                   required=""
                   disabled
                   placeholder="Can't Find"
@@ -766,10 +792,9 @@ const SetBooking = () => {
                 <input
                   type="text"
                   className="form-control"
-                  id="totalSaleableArea"
-                  name="totalSaleableArea"
-                  value={}
-                  onChange={}
+                  id="charges"
+                  name="charges"
+                  value={Booking.charges}
                   required=""
                   disabled
                   placeholder="Can't Find"
@@ -782,12 +807,11 @@ const SetBooking = () => {
                 <input
                   type="number"
                   className="form-control"
-                  id="totalSaleableArea"
-                  name="totalSaleableArea"
-                  value={}
-                  onChange={}
+                  id="yearDuration"
+                  name="yearDuration"
+                  value={Booking.yearDuration}
                   required=""
-                  disabled
+                  onChange={onMaintenanceChange}
                   placeholder="Can't Find"
                 />
               </div>
@@ -798,12 +822,11 @@ const SetBooking = () => {
                 <input
                   type="text"
                   className="form-control"
-                  id="totalSaleableArea"
-                  name="totalSaleableArea"
-                  value={}
-                  onChange={}
+                  id="MaintenanceCharges"
+                  name="MaintenanceCharges"
+                  value={Booking.MaintenanceCharges}
+                  onChange={handleInputs}
                   required=""
-                  disabled
                   placeholder="Can't Find"
                 />
               </div>

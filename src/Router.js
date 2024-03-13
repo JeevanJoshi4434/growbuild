@@ -29,6 +29,7 @@ const PaymentSingle = lazy(() => import("./views/pages/Payment/SinglePaymentDeta
 const BookingDetail = lazy(() => import("./views/pages/Payment/BookingDetails.jsx"));
 const InstallmentPDF = lazy(() => import("./views/pages/Payment/RaisePaymentSlip.jsx"));
 const ExtraFacilities = lazy(() => import("./views/pages/Unit/ExtraFacilities"));
+const Maintenance = lazy(() => import("./views/pages/Maintanence/Maintanence.jsx"));
 const AddParking = lazy(() =>
   import("./views/pages/Parkings/CreateParking.js")
 );
@@ -303,6 +304,7 @@ class AppRouter extends React.Component {
           <Route exact path="/all/booking" component={BookingDetail} />
           <AppRoute exact path="/demands/raise" component={RaiseDemand} />
           <Route exact path="/installment/view" component={InstallmentPDF} />
+          <Route exact path="/maintenance" component={Maintenance} />
           <AppRoute
             exact
             path="/booking-status/view"
