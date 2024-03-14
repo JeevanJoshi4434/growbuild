@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { Badge, CardBody, CardHeader } from "reactstrap";
 import swal from "sweetalert";
 
-const renderOptions = (n) => {
+const renderOptions = n => {
   const options = [];
 
   for (let i = 1; i <= n; i++) {
@@ -20,7 +20,7 @@ const renderOptions = (n) => {
   return options;
 };
 
-const renderFlat = (n) => {
+const renderFlat = n => {
   const options = [];
 
   for (let i = 1; i <= n; i++) {
@@ -34,8 +34,8 @@ const renderFlat = (n) => {
   return options;
 };
 const SetBooking = () => {
-  let buildingId = document.getElementById('building');
-  let unitId = document.getElementById('unit');
+  let buildingId = document.getElementById("building");
+  let unitId = document.getElementById("unit");
   const [Data, setData] = useState([]);
   const [Unit, setUnit] = useState(null);
   const [stage, setStage] = useState({
@@ -45,10 +45,9 @@ const SetBooking = () => {
         selector: "extra_facility",
         sortable: true,
         minWidth: "200px",
-        cell: (row) => (
+        cell: row => (
           <div className="d-flex flex-xl-row flex-column align-items-xl-center align-items-start py-xl-0 py-1">
-            <div className="user-img ml-xl-0 ml-2">
-            </div>
+            <div className="user-img ml-xl-0 ml-2"></div>
             <div className="user-info text-truncate ml-xl-50 ml-0">
               <span
                 title="Payment Plans"
@@ -64,7 +63,7 @@ const SetBooking = () => {
         name: "Payment Plan",
         selector: "Payment Plan",
         sortable: true,
-        cell: (row) => (
+        cell: row => (
           <p className="text-bold-500 text-truncate mb-0">{row.stage_name}</p>
         ),
       },
@@ -72,9 +71,17 @@ const SetBooking = () => {
         name: "Status",
         selector: "Status",
         sortable: true,
-        cell: (row) => (
+        cell: row => (
           <Badge
-            color={row.Status === "completed" ? "light-success" : <>{ row.Status ==="started" ? "light-warning" : "light-danger"}</>}
+            color={
+              row.Status === "completed" ? (
+                "light-success"
+              ) : (
+                <>
+                  {row.Status === "started" ? "light-warning" : "light-danger"}
+                </>
+              )
+            }
             pill
           >
             {row.Status}
@@ -85,7 +92,7 @@ const SetBooking = () => {
         name: "Demand Rate(%)",
         selector: "Demand Rate(%)",
         sortable: true,
-        cell: (row) => {
+        cell: row => {
           return (
             <div className="d-flex flex-column align-items-center">
               <p>{row.amount}</p>
@@ -98,7 +105,7 @@ const SetBooking = () => {
     filteredData: [],
     selectedFacilities: [],
     value: "",
-  })
+  });
   const [state, setState] = useState({
     columns: [
       {
@@ -106,10 +113,9 @@ const SetBooking = () => {
         selector: "extra_facility",
         sortable: true,
         minWidth: "200px",
-        cell: (row) => (
+        cell: row => (
           <div className="d-flex flex-xl-row flex-column align-items-xl-center align-items-start py-xl-0 py-1">
-            <div className="user-img ml-xl-0 ml-2">
-            </div>
+            <div className="user-img ml-xl-0 ml-2"></div>
             <div className="user-info text-truncate ml-xl-50 ml-0">
               <span
                 title={row.extra_facility}
@@ -125,7 +131,7 @@ const SetBooking = () => {
         name: "Provider",
         selector: "provider",
         sortable: true,
-        cell: (row) => (
+        cell: row => (
           <p className="text-bold-500 text-truncate mb-0">{row.name}</p>
         ),
       },
@@ -133,7 +139,7 @@ const SetBooking = () => {
         name: "SGST",
         selector: "SGST",
         sortable: true,
-        cell: (row) => (
+        cell: row => (
           <Badge
             color={row.status === "inactive" ? "light-danger" : "light-success"}
             pill
@@ -146,7 +152,7 @@ const SetBooking = () => {
         name: "CGST",
         selector: "CGST",
         sortable: true,
-        cell: (row) => (
+        cell: row => (
           <Badge
             color={row.status === "inactive" ? "light-danger" : "light-success"}
             pill
@@ -159,7 +165,7 @@ const SetBooking = () => {
         name: "Price",
         selector: "",
         sortable: true,
-        cell: (row) => {
+        cell: row => {
           return (
             <div className="d-flex flex-column align-items-center">
               <p>{row.totalPrice}</p>
@@ -168,161 +174,250 @@ const SetBooking = () => {
         },
       },
     ],
-    data: [
-    ],
+    data: [],
     filteredData: [],
     selectedFacilities: [],
     value: "",
-  })
+  });
   const calculateTotalPrice = () => {
     if (state.selectedFacilities.length > 0) {
-      const totalPrice = state?.selectedFacilities?.reduce((total, facility) => {
-        // Convert totalPrice to a number and add it to the total
-        const facilityTotalPrice = parseFloat(facility?.totalPrice) || 0;
-        return parseFloat(total + facilityTotalPrice);
-      }, 0);
+      const totalPrice = state?.selectedFacilities?.reduce(
+        (total, facility) => {
+          // Convert totalPrice to a number and add it to the total
+          const facilityTotalPrice = parseFloat(facility?.totalPrice) || 0;
+          return parseFloat(total + facilityTotalPrice);
+        },
+        0
+      );
 
       return parseFloat(totalPrice).toFixed(2);
     }
-    return 0.00; // Return 0 if no facilities are selected
+    return 0.0; // Return 0 if no facilities are selected
   };
   const [isEdit, setIsEdit] = useState(false);
   const [AllBooking, setAllBooking] = useState(null);
   const [Booking, setBooking] = useState({
-    Project: null, building: null, floor: null, unit: null, flat: null, parking: null, booking_price: null, booking_date: null, allotment_date: null, agreement_date: null, first_applicant_name: null, first_applicant_father_name: null, first_applicant_husband_name: null, first_applicant_permanentAddress: null, first_applicant_correspondAddress: null, first_applicant_contactNumber: null, first_applicant_email: null, first_applicant_dob: null, first_applicant_AadharNumber: null, first_applicant_pan_number: null, first_applicant_City: null, first_applicant_police_station: null, first_applicant_country: null, first_applicant_occupation: null, first_applicant_religion: null, first_applicant_status: null, second_applicant_name: null, second_applicant_father_name: null, second_applicant_husband_name: null, second_applicant_contact_number: null, second_applicant_email: null, second_applicant_dob: null, second_applicant_pan_number: null, second_applicant_occupation: null, second_applicant_address: null, second_applicant_relation_with_first_applicant: null, third_applicant_name: null, third_applicant_phone_number: null, fourth_applicant_name: null, fourth_applicant_phone_number: null, second_applicant_adhar_number: null, id: null, price_with_tax: null, parking_price: null, totalAmount: null,bookingPrice:null,unitPrice:null,demandRate:null,area:0,charges:0,yearDuration:0,MaintenanceCharges:0
-  })
+    Project: null,
+    building: null,
+    floor: null,
+    unit: null,
+    flat: null,
+    parking: null,
+    booking_price: null,
+    booking_date: null,
+    allotment_date: null,
+    agreement_date: null,
+    first_applicant_name: null,
+    first_applicant_father_name: null,
+    first_applicant_husband_name: null,
+    first_applicant_permanentAddress: null,
+    first_applicant_correspondAddress: null,
+    first_applicant_contactNumber: null,
+    first_applicant_email: null,
+    first_applicant_dob: null,
+    first_applicant_AadharNumber: null,
+    first_applicant_pan_number: null,
+    first_applicant_City: null,
+    first_applicant_police_station: null,
+    first_applicant_country: null,
+    first_applicant_occupation: null,
+    first_applicant_religion: null,
+    first_applicant_status: null,
+    second_applicant_name: null,
+    second_applicant_father_name: null,
+    second_applicant_husband_name: null,
+    second_applicant_contact_number: null,
+    second_applicant_email: null,
+    second_applicant_dob: null,
+    second_applicant_pan_number: null,
+    second_applicant_occupation: null,
+    second_applicant_address: null,
+    second_applicant_relation_with_first_applicant: null,
+    third_applicant_name: null,
+    third_applicant_phone_number: null,
+    fourth_applicant_name: null,
+    fourth_applicant_phone_number: null,
+    second_applicant_adhar_number: null,
+    id: null,
+    price_with_tax: null,
+    parking_price: null,
+    totalAmount: null,
+    bookingPrice: null,
+    unitPrice: null,
+    demandRate: null,
+    area: 0,
+    charges: 0,
+    yearDuration: 0,
+    MaintenanceCharges: 0,
+  });
   const uploadBooking = async () => {
-    const res = await axios.post(process.env.REACT_APP_PORT + '/api/create/booking', {
-      Project: Booking?.Project,
-      building: buildingId.value,
-      floor: Booking?.floor,
-      unit: unitId.value,
-      parking: Booking?.parking,
-      booking_price: Booking?.booking_price,
-      booking_date: Booking?.booking_date,
-      allotment_date: Booking?.allotment_date,
-      agreement_date: Booking?.agreement_date,
-      first_applicant_name: Booking?.first_applicant_name,
-      first_applicant_father_name: Booking?.first_applicant_father_name,
-      first_applicant_husband_name: Booking?.first_applicant_husband_name,
-      first_applicant_permanentAddress: Booking?.first_applicant_permanentAddress,
-      first_applicant_correspondAddress: Booking?.first_applicant_correspondAddress,
-      first_applicant_contactNumber: Booking?.first_applicant_contactNumber,
-      first_applicant_email: Booking?.first_applicant_email,
-      first_applicant_dob: Booking?.first_applicant_dob,
-      first_applicant_AadharNumber: Booking?.first_applicant_AadharNumber,
-      first_applicant_pan_number: Booking?.first_applicant_pan_number,
-      first_applicant_City: Booking?.first_applicant_City,
-      first_applicant_police_station: Booking?.first_applicant_police_station,
-      first_applicant_country: Booking?.first_applicant_country,
-      first_applicant_occupation: Booking?.first_applicant_occupation,
-      first_applicant_religion: Booking?.first_applicant_religion,
-      first_applicant_status: Booking?.first_applicant_status,
-      second_applicant_name: Booking?.second_applicant_name,
-      second_applicant_father_name: Booking?.second_applicant_father_name,
-      second_applicant_husband_name: Booking?.second_applicant_husband_name,
-      second_applicant_contact_number: Booking?.second_applicant_contact_number,
-      second_applicant_email: Booking?.second_applicant_email,
-      second_applicant_dob: Booking?.second_applicant_dob,
-      second_applicant_pan_number: Booking?.second_applicant_pan_number,
-      second_applicant_occupation: Booking?.second_applicant_occupation,
-      second_applicant_address: Booking?.second_applicant_address,
-      second_applicant_relation_with_first_applicant: Booking?.second_applicant_relation_with_first_applicant,
-      third_applicant_name: Booking?.third_applicant_name,
-      third_applicant_phone_number: Booking?.third_applicant_phone_number,
-      fourth_applicant_name: Booking?.fourth_applicant_name,
-      fourth_applicant_phone_number: Booking?.fourth_applicant_phone_number,
-      second_applicant_adhar_number: Booking?.second_applicant_adhar_number,
-      price_with_tax: Booking?.totalAmount,
-      totalAmount: Booking?.totalAmount,
-      extra_facility: state?.selectedFacilities,
-      bookingPrice:Booking?.booking_price,
-      unitPrice:Booking?.unitPrice,
-      area:Booking?.area,
-      charges:Booking?.charges,
-      yearDuration:Booking?.yearDuration,
-      MaintenanceCharges:Booking?.MaintenanceCharges,
-    })
+    const res = await axios.post(
+      process.env.REACT_APP_PORT + "/api/create/booking",
+      {
+        Project: Booking?.Project,
+        building: buildingId.value,
+        floor: Booking?.floor,
+        unit: unitId.value,
+        parking: Booking?.parking,
+        booking_price: Booking?.booking_price,
+        booking_date: Booking?.booking_date,
+        allotment_date: Booking?.allotment_date,
+        agreement_date: Booking?.agreement_date,
+        first_applicant_name: Booking?.first_applicant_name,
+        first_applicant_father_name: Booking?.first_applicant_father_name,
+        first_applicant_husband_name: Booking?.first_applicant_husband_name,
+        first_applicant_permanentAddress:
+          Booking?.first_applicant_permanentAddress,
+        first_applicant_correspondAddress:
+          Booking?.first_applicant_correspondAddress,
+        first_applicant_contactNumber: Booking?.first_applicant_contactNumber,
+        first_applicant_email: Booking?.first_applicant_email,
+        first_applicant_dob: Booking?.first_applicant_dob,
+        first_applicant_AadharNumber: Booking?.first_applicant_AadharNumber,
+        first_applicant_pan_number: Booking?.first_applicant_pan_number,
+        first_applicant_City: Booking?.first_applicant_City,
+        first_applicant_police_station: Booking?.first_applicant_police_station,
+        first_applicant_country: Booking?.first_applicant_country,
+        first_applicant_occupation: Booking?.first_applicant_occupation,
+        first_applicant_religion: Booking?.first_applicant_religion,
+        first_applicant_status: Booking?.first_applicant_status,
+        second_applicant_name: Booking?.second_applicant_name,
+        second_applicant_father_name: Booking?.second_applicant_father_name,
+        second_applicant_husband_name: Booking?.second_applicant_husband_name,
+        second_applicant_contact_number:
+          Booking?.second_applicant_contact_number,
+        second_applicant_email: Booking?.second_applicant_email,
+        second_applicant_dob: Booking?.second_applicant_dob,
+        second_applicant_pan_number: Booking?.second_applicant_pan_number,
+        second_applicant_occupation: Booking?.second_applicant_occupation,
+        second_applicant_address: Booking?.second_applicant_address,
+        second_applicant_relation_with_first_applicant:
+          Booking?.second_applicant_relation_with_first_applicant,
+        third_applicant_name: Booking?.third_applicant_name,
+        third_applicant_phone_number: Booking?.third_applicant_phone_number,
+        fourth_applicant_name: Booking?.fourth_applicant_name,
+        fourth_applicant_phone_number: Booking?.fourth_applicant_phone_number,
+        second_applicant_adhar_number: Booking?.second_applicant_adhar_number,
+        price_with_tax: Booking?.totalAmount,
+        totalAmount: Booking?.totalAmount,
+        extra_facility: state?.selectedFacilities,
+        bookingPrice: Booking?.booking_price,
+        unitPrice: Booking?.unitPrice,
+        area: Booking?.area,
+        charges: Booking?.charges,
+        yearDuration: Booking?.yearDuration,
+        MaintenanceCharges: Booking?.MaintenanceCharges,
+      }
+    );
     if (res.status === 200) {
       window.alert("Booking created successfully");
       window.location.reload();
     } else {
       window.alert("Something Error Happened!");
     }
-  }
+  };
   console.log(Booking);
   let name, value;
-  const handleInputs = (e) => {
+  const handleInputs = e => {
     name = e.target.name;
     value = e.target.value;
     setBooking({ ...Booking, [name]: value });
-  }
+  };
   const [allUnits, setAllUnits] = useState(null);
   const [allBuilding, setAllBuilding] = useState(null);
   const [Building, setBuilding] = useState(null);
   const [AllProjects, setAllProjects] = useState(null);
   const [project, setProject] = useState(null);
   const [demands, setDemands] = useState({
-    completed:[],pending:[],total:"0.0"
+    completed: [],
+    pending: [],
+    total: "0.0",
   });
   const getProject = async () => {
-    const res = await axios.get(process.env.REACT_APP_PORT + '/api/all/project', {
-      Headers: {
-        'Content-Type': 'application/json'
+    const res = await axios.get(
+      process.env.REACT_APP_PORT + "/api/all/project",
+      {
+        Headers: {
+          "Content-Type": "application/json",
+        },
       }
-    })
+    );
     setAllProjects(res.data);
-  }
+  };
   var history = useHistory();
   useEffect(() => {
     getProject();
   }, []);
-  const getBuildings = async (id) => {
+  const getBuildings = async id => {
     setProject(id);
     if ((id?.length === 24 || id?.length === 12) && id !== "Select Project") {
-      const res = await axios.get(`${process.env.REACT_APP_PORT}/api/buildings/${id}`, {
-        Headers: {
-          'Content-Type': 'application/json'
+      const res = await axios.get(
+        `${process.env.REACT_APP_PORT}/api/buildings/${id}`,
+        {
+          Headers: {
+            "Content-Type": "application/json",
+          },
         }
-      }
       );
       setAllBuilding(res.data);
     }
-  }
+  };
   const getUnits = async (id, project) => {
-    if ((id?.length === 24 || id?.length === 12) && (project?.length === 24 || project?.length === 12)) {
-      const res = await axios.get(`${process.env.REACT_APP_PORT}/api/find/unit/available/${id}/${project}`, {
-        Headers: {
-          'Content-Type': 'application/json'
+    if (
+      (id?.length === 24 || id?.length === 12) &&
+      (project?.length === 24 || project?.length === 12)
+    ) {
+      const res = await axios.get(
+        `${process.env.REACT_APP_PORT}/api/find/unit/available/${id}/${project}`,
+        {
+          Headers: {
+            "Content-Type": "application/json",
+          },
         }
-      }
       );
       setAllUnits(res.data);
     }
-  }
-  const getBuildingDetail = async (id) => {
-    if ((id?.length === 24 || id?.length === 12)) {
-      const res = await axios.get(`${process.env.REACT_APP_PORT}/api/building/${id}`, {
-        Headers: {
-          'Content-Type': 'application/json'
+  };
+  const getBuildingDetail = async id => {
+    if (id?.length === 24 || id?.length === 12) {
+      const res = await axios.get(
+        `${process.env.REACT_APP_PORT}/api/building/${id}`,
+        {
+          Headers: {
+            "Content-Type": "application/json",
+          },
         }
-      }
       );
       setBuilding(res.data);
       setState({ ...state, data: res.data?.extra_facilities });
 
-      const demand = await axios.get(`${process.env.REACT_APP_PORT}/api/demand/percent/${id}/${project}`);
-      if(demand.data?.err) window.alert("Error Happened try checking your internet and try again.");
-      else{
-        setDemands({...demands,completed:demand.data?.inProgress,pending:demand.data?.Available,total:demand.data?.percent});
-        setStage({...stage, data:demand.data?.total});
-        setBooking({...Booking,demandRate:demand.data?.amount});
+      const demand = await axios.get(
+        `${process.env.REACT_APP_PORT}/api/demand/percent/${id}/${project}`
+      );
+      if (demand.data?.err)
+        window.alert(
+          "Error Happened try checking your internet and try again."
+        );
+      else {
+        setDemands({
+          ...demands,
+          completed: demand.data?.inProgress,
+          pending: demand.data?.Available,
+          total: demand.data?.percent,
+        });
+        setStage({ ...stage, data: demand.data?.total });
+        setBooking({ ...Booking, demandRate: demand.data?.amount });
       }
     }
-  }
-  const edit = async (data) => {
+  };
+  const edit = async data => {
     setBooking({
-      ...Booking, Project: data?.Project, building: data?.building, floor: data?.floor, unit: data?.unit, flat: data?.flat,
+      ...Booking,
+      Project: data?.Project,
+      building: data?.building,
+      floor: data?.floor,
+      unit: data?.unit,
+      flat: data?.flat,
       parking: data?.parking,
       booking_price: data?.booking_price,
       booking_date: data?.booking_date,
@@ -332,7 +427,8 @@ const SetBooking = () => {
       first_applicant_father_name: data?.first_applicant_father_name,
       first_applicant_husband_name: data?.first_applicant_husband_name,
       first_applicant_permanentAddress: data?.first_applicant_permanentAddress,
-      first_applicant_correspondAddress: data?.first_applicant_correspondAddress,
+      first_applicant_correspondAddress:
+        data?.first_applicant_correspondAddress,
       first_applicant_contactNumber: data?.first_applicant_contactNumber,
       first_applicant_email: data?.first_applicant_email,
       first_applicant_dob: data?.first_applicant_dob,
@@ -353,7 +449,8 @@ const SetBooking = () => {
       second_applicant_pan_number: data?.second_applicant_pan_number,
       second_applicant_occupation: data?.second_applicant_occupation,
       second_applicant_address: data?.second_applicant_address,
-      second_applicant_relation_with_first_applicant: data?.second_applicant_relation_with_first_applicant,
+      second_applicant_relation_with_first_applicant:
+        data?.second_applicant_relation_with_first_applicant,
       third_applicant_name: data?.third_applicant_name,
       third_applicant_phone_number: data?.third_applicant_phone_number,
       fourth_applicant_name: data?.fourth_applicant_name,
@@ -361,15 +458,15 @@ const SetBooking = () => {
       second_applicant_adhar_number: data?.second_applicant_adhar_number,
       price_with_tax: data?.price_with_tax,
       totalAmount: data?.totalAmount,
-      bookingPrice:data?.bookingPrice,
-      unitPrice:data?.unitPrice,
-      parking_price:data.price,
-      area:data?.maintenance[0]?.area || 0,
-      charges:data?.maintenance[0]?.chargesPerSqFt || 0,
+      bookingPrice: data?.bookingPrice,
+      unitPrice: data?.unitPrice,
+      parking_price: data.price,
+      area: data?.maintenance[0]?.area || 0,
+      charges: data?.maintenance[0]?.chargesPerSqFt || 0,
       yearDuration: data?.maintenance[0]?.Duration || 0,
-      MaintenanceCharges: data?.maintenance[0]?.MaintenanceCharges || 0
+      MaintenanceCharges: data?.maintenance[0]?.MaintenanceCharges || 0,
     });
-    setIsEdit(true)
+    setIsEdit(true);
     await getBuildings(data.Project);
     setBooking({ ...Booking, building: data?.building });
     await getBuildingDetail(data.building);
@@ -379,7 +476,11 @@ const SetBooking = () => {
     setBooking({ ...Booking, unit: data?.unit });
     setBooking({
       ...Booking,
-      Project: data?.Project, building: data?.building, floor: data?.floor, unit: data?.unit, flat: data?.flat,
+      Project: data?.Project,
+      building: data?.building,
+      floor: data?.floor,
+      unit: data?.unit,
+      flat: data?.flat,
       parking: data?.parking,
       booking_price: data?.booking_price,
       booking_date: data?.booking_date,
@@ -389,7 +490,8 @@ const SetBooking = () => {
       first_applicant_father_name: data?.first_applicant_father_name,
       first_applicant_husband_name: data?.first_applicant_husband_name,
       first_applicant_permanentAddress: data?.first_applicant_permanentAddress,
-      first_applicant_correspondAddress: data?.first_applicant_correspondAddress,
+      first_applicant_correspondAddress:
+        data?.first_applicant_correspondAddress,
       first_applicant_contactNumber: data?.first_applicant_contactNumber,
       first_applicant_email: data?.first_applicant_email,
       first_applicant_dob: data?.first_applicant_dob,
@@ -410,7 +512,8 @@ const SetBooking = () => {
       second_applicant_pan_number: data?.second_applicant_pan_number,
       second_applicant_occupation: data?.second_applicant_occupation,
       second_applicant_address: data?.second_applicant_address,
-      second_applicant_relation_with_first_applicant: data?.second_applicant_relation_with_first_applicant,
+      second_applicant_relation_with_first_applicant:
+        data?.second_applicant_relation_with_first_applicant,
       third_applicant_name: data?.third_applicant_name,
       third_applicant_phone_number: data?.third_applicant_phone_number,
       fourth_applicant_name: data?.fourth_applicant_name,
@@ -419,28 +522,32 @@ const SetBooking = () => {
       id: data?._id,
       price_with_tax: data?.price_with_tax,
       totalAmount: data?.totalAmount,
-      bookingPrice:data?.bookingPrice,unitPrice:data?.unitPrice,
+      bookingPrice: data?.bookingPrice,
+      unitPrice: data?.unitPrice,
       parking_price: data?.price,
-      area:data?.maintenance[0]?.area || 0,
-      charges:data?.maintenance[0]?.chargesPerSqFt || 0,
+      area: data?.maintenance[0]?.area || 0,
+      charges: data?.maintenance[0]?.chargesPerSqFt || 0,
       yearDuration: data?.maintenance[0]?.Duration || 0,
-      MaintenanceCharges: data?.maintenance[0]?.MaintenanceCharges || 0
+      MaintenanceCharges: data?.maintenance[0]?.MaintenanceCharges || 0,
     });
-    setState({ ...state, data: data })
-  }
+    setState({ ...state, data: data });
+  };
   const getAllBooking = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_PORT}/api/get/all/booking`, {
-      Headers: {
-        'Content-Type': 'application/json'
+    const res = await axios.get(
+      `${process.env.REACT_APP_PORT}/api/get/all/booking`,
+      {
+        Headers: {
+          "Content-Type": "application/json",
+        },
       }
-    })
+    );
     setAllBooking(res.data);
-  }
+  };
   useEffect(() => {
     getAllBooking();
-  }, [])
+  }, []);
 
-  const deleteBooking = async (id) => {
+  const deleteBooking = async id => {
     const willDelete = await swal({
       title: "Are you sure?",
       text: "Are you sure that you want to delete this Block?",
@@ -449,126 +556,210 @@ const SetBooking = () => {
     });
 
     if (willDelete) {
-      const res = await axios.delete(process.env.REACT_APP_PORT + '/api/delete/booking/' + id, {
-        Headers: {
-          'Content-Type': 'application/json'
+      const res = await axios.delete(
+        process.env.REACT_APP_PORT + "/api/delete/booking/" + id,
+        {
+          Headers: {
+            "Content-Type": "application/json",
+          },
         }
-      })
+      );
       getAllBooking();
     }
     willDelete();
-  }
-  const updateBooking = async (id) => {
-    const res = await axios.put(process.env.REACT_APP_PORT + '/api/update/booking/' + id, {
-      Project: Booking?.Project,
-      building: buildingId.value,
-      floor: Booking?.floor,
-      unit: unitId.value,
-      parking: Booking?.parking,
-      booking_price: Booking?.booking_price,
-      booking_date: Booking?.booking_date,
-      allotment_date: Booking?.allotment_date,
-      agreement_date: Booking?.agreement_date,
-      first_applicant_name: Booking?.first_applicant_name,
-      first_applicant_father_name: Booking?.first_applicant_father_name,
-      first_applicant_husband_name: Booking?.first_applicant_husband_name,
-      first_applicant_permanentAddress: Booking?.first_applicant_permanentAddress,
-      first_applicant_correspondAddress: Booking?.first_applicant_correspondAddress,
-      first_applicant_contactNumber: Booking?.first_applicant_contactNumber,
-      first_applicant_email: Booking?.first_applicant_email,
-      first_applicant_dob: Booking?.first_applicant_dob,
-      first_applicant_AadharNumber: Booking?.first_applicant_AadharNumber,
-      first_applicant_pan_number: Booking?.first_applicant_pan_number,
-      first_applicant_City: Booking?.first_applicant_City,
-      first_applicant_police_station: Booking?.first_applicant_police_station,
-      first_applicant_country: Booking?.first_applicant_country,
-      first_applicant_occupation: Booking?.first_applicant_occupation,
-      first_applicant_religion: Booking?.first_applicant_religion,
-      first_applicant_status: Booking?.first_applicant_status,
-      second_applicant_name: Booking?.second_applicant_name,
-      second_applicant_father_name: Booking?.second_applicant_father_name,
-      second_applicant_husband_name: Booking?.second_applicant_husband_name,
-      second_applicant_contact_number: Booking?.second_applicant_contact_number,
-      second_applicant_email: Booking?.second_applicant_email,
-      second_applicant_dob: Booking?.second_applicant_dob,
-      second_applicant_pan_number: Booking?.second_applicant_pan_number,
-      second_applicant_occupation: Booking?.second_applicant_occupation,
-      second_applicant_address: Booking?.second_applicant_address,
-      second_applicant_relation_with_first_applicant: Booking?.second_applicant_relation_with_first_applicant,
-      third_applicant_name: Booking?.third_applicant_name,
-      third_applicant_phone_number: Booking?.third_applicant_phone_number,
-      fourth_applicant_name: Booking?.fourth_applicant_name,
-      fourth_applicant_phone_number: Booking?.fourth_applicant_phone_number,
-      second_applicant_adhar_number: Booking?.second_applicant_adhar_number,
-      price_with_tax: Booking?.totalAmount,
-      totalAmount: Booking?.totalAmount,
-      extra_facility: state?.selectedFacilities,
-      bookingPrice:Booking?.booking_price,
-      unitPrice:Booking?.unitPrice,
-      area:Booking?.area,
-      charges:Booking?.charges,
-      yearDuration:Booking?.yearDuration,
-      MaintenanceCharges:Booking?.MaintenanceCharges
-    })
+  };
+  const updateBooking = async id => {
+    const res = await axios.put(
+      process.env.REACT_APP_PORT + "/api/update/booking/" + id,
+      {
+        Project: Booking?.Project,
+        building: buildingId.value,
+        floor: Booking?.floor,
+        unit: unitId.value,
+        parking: Booking?.parking,
+        booking_price: Booking?.booking_price,
+        booking_date: Booking?.booking_date,
+        allotment_date: Booking?.allotment_date,
+        agreement_date: Booking?.agreement_date,
+        first_applicant_name: Booking?.first_applicant_name,
+        first_applicant_father_name: Booking?.first_applicant_father_name,
+        first_applicant_husband_name: Booking?.first_applicant_husband_name,
+        first_applicant_permanentAddress:
+          Booking?.first_applicant_permanentAddress,
+        first_applicant_correspondAddress:
+          Booking?.first_applicant_correspondAddress,
+        first_applicant_contactNumber: Booking?.first_applicant_contactNumber,
+        first_applicant_email: Booking?.first_applicant_email,
+        first_applicant_dob: Booking?.first_applicant_dob,
+        first_applicant_AadharNumber: Booking?.first_applicant_AadharNumber,
+        first_applicant_pan_number: Booking?.first_applicant_pan_number,
+        first_applicant_City: Booking?.first_applicant_City,
+        first_applicant_police_station: Booking?.first_applicant_police_station,
+        first_applicant_country: Booking?.first_applicant_country,
+        first_applicant_occupation: Booking?.first_applicant_occupation,
+        first_applicant_religion: Booking?.first_applicant_religion,
+        first_applicant_status: Booking?.first_applicant_status,
+        second_applicant_name: Booking?.second_applicant_name,
+        second_applicant_father_name: Booking?.second_applicant_father_name,
+        second_applicant_husband_name: Booking?.second_applicant_husband_name,
+        second_applicant_contact_number:
+          Booking?.second_applicant_contact_number,
+        second_applicant_email: Booking?.second_applicant_email,
+        second_applicant_dob: Booking?.second_applicant_dob,
+        second_applicant_pan_number: Booking?.second_applicant_pan_number,
+        second_applicant_occupation: Booking?.second_applicant_occupation,
+        second_applicant_address: Booking?.second_applicant_address,
+        second_applicant_relation_with_first_applicant:
+          Booking?.second_applicant_relation_with_first_applicant,
+        third_applicant_name: Booking?.third_applicant_name,
+        third_applicant_phone_number: Booking?.third_applicant_phone_number,
+        fourth_applicant_name: Booking?.fourth_applicant_name,
+        fourth_applicant_phone_number: Booking?.fourth_applicant_phone_number,
+        second_applicant_adhar_number: Booking?.second_applicant_adhar_number,
+        price_with_tax: Booking?.totalAmount,
+        totalAmount: Booking?.totalAmount,
+        extra_facility: state?.selectedFacilities,
+        bookingPrice: Booking?.booking_price,
+        unitPrice: Booking?.unitPrice,
+        area: Booking?.area,
+        charges: Booking?.charges,
+        yearDuration: Booking?.yearDuration,
+        MaintenanceCharges: Booking?.MaintenanceCharges,
+      }
+    );
     if (res.status === 200) {
-      swal('Building Updated successfully!', 'success')
+      swal("Building Updated successfully!", "success");
       setTimeout(() => {
         history.go(0);
       }, 2000);
     }
-  }
+  };
 
-  const getPrice = async (id,unit_price,salablePrice,SalableArea) => {
+  const getPrice = async (id, unit_price, salablePrice, SalableArea) => {
     const data = {
       Project: Booking.Project,
-      building: buildingId.value
+      building: buildingId.value,
     };
 
-    const res = await axios.post(`${process.env.REACT_APP_PORT}/api/booking/parking`, data, {
-      headers: {
-        'Content-Type': 'application/json',
+    const res = await axios.post(
+      `${process.env.REACT_APP_PORT}/api/booking/parking`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    });
+    );
     if (res.data?.status === 200) {
-      setBooking({ ...Booking, parking_price: res.data.price, unitPrice:unit_price,area:SalableArea,charges:salablePrice.toFixed(2) });
+      setBooking({
+        ...Booking,
+        parking_price: res.data.price,
+        unitPrice: unit_price,
+        area: SalableArea,
+        charges: salablePrice.toFixed(2),
+      });
     } else {
-      setBooking({ ...Booking, parking_price:0, unitPrice:unit_price,area:SalableArea,charges:salablePrice.toFixed(2) });
+      setBooking({
+        ...Booking,
+        parking_price: 0,
+        unitPrice: unit_price,
+        area: SalableArea,
+        charges: salablePrice.toFixed(2),
+      });
     }
-  }
+  };
 
-  const onMaintenanceChange = (e)=>{
+  const onMaintenanceChange = e => {
     let value = e.target.value;
-    let totalPrice = (Booking.area * Booking.charges)*value;
-    setBooking({ ...Booking, yearDuration:value, MaintenanceCharges:totalPrice.toFixed(2) });
-  }
-  const unitPriceFetch= async(id)=>{
-    let price = 0.00;
-    const resp = await axios.get(`${process.env.REACT_APP_PORT}/api/unit/${id}`);
+    let totalPrice = Booking.area * Booking.charges * value;
+    setBooking({
+      ...Booking,
+      yearDuration: value,
+      MaintenanceCharges: totalPrice.toFixed(2),
+    });
+  };
+  const unitPriceFetch = async id => {
+    let price = 0.0;
+    const resp = await axios.get(
+      `${process.env.REACT_APP_PORT}/api/unit/${id}`
+    );
     let SalablePrice = 0;
     let SalableArea = 0;
     if (resp.status === 200 || resp.status === 304) {
       price = resp.data.pricewithtax;
       SalablePrice = resp.data.price;
-      SalableArea = resp.data.total_area_this_unit
-
+      SalableArea = resp.data.total_area_this_unit;
     }
-    await getPrice(id,price,SalablePrice,SalableArea);
-  }
+    await getPrice(id, price, SalablePrice, SalableArea);
+  };
 
   const closeEdit = () => {
-    setBooking({ ...Booking, Project: null, building: null, floor: null, unit: null, flat: null, parking: null, booking_price: null, booking_date: null, allotment_date: null, agreement_date: null, first_applicant_name: null, first_applicant_father_name: null, first_applicant_husband_name: null, first_applicant_permanentAddress: null, first_applicant_correspondAddress: null, first_applicant_contactNumber: null, first_applicant_email: null, first_applicant_dob: null, first_applicant_AadharNumber: null, first_applicant_pan_number: null, first_applicant_City: null, first_applicant_police_station: null, first_applicant_country: null, first_applicant_occupation: null, first_applicant_religion: null, first_applicant_status: null, second_applicant_name: null, second_applicant_father_name: null, second_applicant_husband_name: null, second_applicant_contact_number: null, second_applicant_email: null, second_applicant_dob: null, second_applicant_pan_number: null, second_applicant_occupation: null, second_applicant_address: null, second_applicant_relation_with_first_applicant: null, third_applicant_name: null, third_applicant_phone_number: null, fourth_applicant_name: null, fourth_applicant_phone_number: null, second_applicant_adhar_number: null, id: null,area:0,charges:0,yearDuration:0,MaintenanceCharges:0 })
+    setBooking({
+      ...Booking,
+      Project: null,
+      building: null,
+      floor: null,
+      unit: null,
+      flat: null,
+      parking: null,
+      booking_price: null,
+      booking_date: null,
+      allotment_date: null,
+      agreement_date: null,
+      first_applicant_name: null,
+      first_applicant_father_name: null,
+      first_applicant_husband_name: null,
+      first_applicant_permanentAddress: null,
+      first_applicant_correspondAddress: null,
+      first_applicant_contactNumber: null,
+      first_applicant_email: null,
+      first_applicant_dob: null,
+      first_applicant_AadharNumber: null,
+      first_applicant_pan_number: null,
+      first_applicant_City: null,
+      first_applicant_police_station: null,
+      first_applicant_country: null,
+      first_applicant_occupation: null,
+      first_applicant_religion: null,
+      first_applicant_status: null,
+      second_applicant_name: null,
+      second_applicant_father_name: null,
+      second_applicant_husband_name: null,
+      second_applicant_contact_number: null,
+      second_applicant_email: null,
+      second_applicant_dob: null,
+      second_applicant_pan_number: null,
+      second_applicant_occupation: null,
+      second_applicant_address: null,
+      second_applicant_relation_with_first_applicant: null,
+      third_applicant_name: null,
+      third_applicant_phone_number: null,
+      fourth_applicant_name: null,
+      fourth_applicant_phone_number: null,
+      second_applicant_adhar_number: null,
+      id: null,
+      area: 0,
+      charges: 0,
+      yearDuration: 0,
+      MaintenanceCharges: 0,
+    });
     setIsEdit(false);
-  }
+  };
 
-  const getTotalPrice = async() => {
-    let price = (Booking?.parking_price !== null && Booking?.parking >= 1) ? parseFloat(calculateTotalPrice()) + parseFloat((Booking.parking_price * Booking.parking)+((Booking.parking_price * Booking.parking)*0.01)) : calculateTotalPrice();
-    if(Booking.demandRate !== null && Booking.unitPrice !== null){
-      price = parseFloat(price) +(parseFloat(Booking.unitPrice));
-      setBooking({ ...Booking, totalAmount: price.toFixed(2)})
+  const getTotalPrice = async () => {
+    let price =
+      Booking?.parking_price !== null && Booking?.parking >= 1
+        ? parseFloat(calculateTotalPrice()) +
+          parseFloat(
+            Booking.parking_price * Booking.parking +
+              Booking.parking_price * Booking.parking * 0.01
+          )
+        : calculateTotalPrice();
+    if (Booking.demandRate !== null && Booking.unitPrice !== null) {
+      price = parseFloat(price) + parseFloat(Booking.unitPrice);
+      setBooking({ ...Booking, totalAmount: price.toFixed(2) });
     }
-  }
-
-
+  };
 
   return (
     <>
@@ -580,102 +771,186 @@ const SetBooking = () => {
           <div className="col-md-6 col-12 mb-2">
             <p className="text-alternate">Select Project</p>
             <div className="input-group">
-              <select className="form-control" id="project" onChange={(e) => { handleInputs(e); getBuildings(e.target.value); }} name="Project" value={Booking.Project}>
-                {AllProjects === null ?
-                  <option value={null} name={null}>Loading...</option>
-                  : <option value={null} name={null}>Select Project</option>}
-                {AllProjects !== null && AllProjects?.length === 0 &&
-                  <option value={null} name={null}>No projects Avaliable</option>
-                }
-                {AllProjects !== null && AllProjects?.length > 0 && AllProjects.map((i) => {
-                  return (
-                    <option name={i?._id} value={i?._id}>{i?.Name}</option>
-                  )
-                })
-                }
+              <select
+                className="form-control"
+                id="project"
+                onChange={e => {
+                  handleInputs(e);
+                  getBuildings(e.target.value);
+                }}
+                name="Project"
+                value={Booking.Project}
+              >
+                {AllProjects === null ? (
+                  <option value={null} name={null}>
+                    Loading...
+                  </option>
+                ) : (
+                  <option value={null} name={null}>
+                    Select Project
+                  </option>
+                )}
+                {AllProjects !== null && AllProjects?.length === 0 && (
+                  <option value={null} name={null}>
+                    No projects Avaliable
+                  </option>
+                )}
+                {AllProjects !== null &&
+                  AllProjects?.length > 0 &&
+                  AllProjects.map(i => {
+                    return (
+                      <option name={i?._id} value={i?._id}>
+                        {i?.Name}
+                      </option>
+                    );
+                  })}
               </select>
             </div>
           </div>
           <div className="col-md-6 col-12 mb-2">
             <p className="text-alternate">Select Building</p>
             <div className="input-group">
-              <select className="form-control" id="building" name="building" onChange={(e) => { handleInputs(e); getBuildingDetail(e.target.value); getUnits(e.target.value, Booking?.Project); }} value={Booking.building} >
-                {Booking.Project === null ? <option value={null} name={null} >First select Project</option>
-                  : <>
-                    {allBuilding === null && <option value={null} name={null} >Loading...</option>}
-                    {allBuilding !== null && allBuilding?.length === 0 && <option value={null} name={null} >No Building Avaliable</option>}
-                  </>
-                }
-                {allBuilding?.length > 0 &&
+              <select
+                className="form-control"
+                id="building"
+                name="building"
+                onChange={e => {
+                  handleInputs(e);
+                  getBuildingDetail(e.target.value);
+                  getUnits(e.target.value, Booking?.Project);
+                }}
+                value={Booking.building}
+              >
+                {Booking.Project === null ? (
+                  <option value={null} name={null}>
+                    First select Project
+                  </option>
+                ) : (
                   <>
-                    <option value={null} name={null} >Select Building</option>
-                    {
-                      allBuilding?.map((i) => {
-                        return (
-                          <>
-                            <option value={i?._id} name={i?._id}>{i?.buildingName}</option>
-                          </>
-                        )
-                      })
-                    }
+                    {allBuilding === null && (
+                      <option value={null} name={null}>
+                        Loading...
+                      </option>
+                    )}
+                    {allBuilding !== null && allBuilding?.length === 0 && (
+                      <option value={null} name={null}>
+                        No Building Avaliable
+                      </option>
+                    )}
                   </>
-                }
+                )}
+                {allBuilding?.length > 0 && (
+                  <>
+                    <option value={null} name={null}>
+                      Select Building
+                    </option>
+                    {allBuilding?.map(i => {
+                      return (
+                        <>
+                          <option value={i?._id} name={i?._id}>
+                            {i?.buildingName}
+                          </option>
+                        </>
+                      );
+                    })}
+                  </>
+                )}
               </select>
             </div>
           </div>
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Select Floor</p>
             <div className="input-group">
-              <select className="form-control" id="floor" name="floor" onChange={handleInputs} value={Booking.floor}>
-                {Building === null ?
-                  <option value={null} name={null}>Loading...</option>
-                  : <option value={null} name={null}>Select Floor</option>}
-                {Building !== null && Building?.total_number_of_floors === 0 &&
-                  <option value={null} name={null}>No Floor Avaliable</option>
-                }
-                {
-                  Building !== null &&
+              <select
+                className="form-control"
+                id="floor"
+                name="floor"
+                onChange={handleInputs}
+                value={Booking.floor}
+              >
+                {Building === null ? (
+                  <option value={null} name={null}>
+                    Loading...
+                  </option>
+                ) : (
+                  <option value={null} name={null}>
+                    Select Floor
+                  </option>
+                )}
+                {Building !== null &&
+                  Building?.total_number_of_floors === 0 && (
+                    <option value={null} name={null}>
+                      No Floor Avaliable
+                    </option>
+                  )}
+                {Building !== null &&
                   Building?.total_number_of_floors > 0 &&
-                  renderOptions(Building?.total_number_of_floors)
-                }
+                  renderOptions(Building?.total_number_of_floors)}
               </select>
             </div>
           </div>
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Select Unit</p>
             <div className="input-group">
-              <select className="form-control" id="unit" name="unit" onChange={async(e) => { handleInputs(e); await unitPriceFetch(e.target.value); }} value={Booking.unit}>
-                {Booking.Project === null && Booking.building === null && <option value={null} name={null}>Select Project First</option>}
-                {Booking.building === null && Booking.Project !== null && <option value={null} name={null}>Select Building First</option>}
-                {Booking.building !== null && Booking.Project !== null && allUnits === null && <option value={null} name={null}>Loading...</option>}
-                {allUnits !== null &&
+              <select
+                className="form-control"
+                id="unit"
+                name="unit"
+                onChange={async e => {
+                  handleInputs(e);
+                  await unitPriceFetch(e.target.value);
+                }}
+                value={Booking.unit}
+              >
+                {Booking.Project === null && Booking.building === null && (
+                  <option value={null} name={null}>
+                    Select Project First
+                  </option>
+                )}
+                {Booking.building === null && Booking.Project !== null && (
+                  <option value={null} name={null}>
+                    Select Building First
+                  </option>
+                )}
+                {Booking.building !== null &&
+                  Booking.Project !== null &&
+                  allUnits === null && (
+                    <option value={null} name={null}>
+                      Loading...
+                    </option>
+                  )}
+                {allUnits !== null && (
                   <>
-                    {allUnits.length === 0
-                      ? <option value={null} name={null}>No Units Avaliable.</option>
-                      : <option value={null} name={null}>Select Unit</option>
-
-                    }
-                    {
-                     Booking.floor===null ?
-                     <option value={null} name={null}>Select Floor</option>
-                    :
-                    allUnits.length > 0 &&
-                    allUnits.map((i) => {
-                      let s= "";
-                      s=i.unit_name;
-                      s=s.slice(0,1);
-                      if(s===Booking.floor)
-                      {
-                        return (
-                        <option value={i?._id} name={i?._id}>
-                          {i?.unit_name}
-                        </option>
-                      );
-                      }
-                    }) 
-                    }
+                    {allUnits.length === 0 ? (
+                      <option value={null} name={null}>
+                        No Units Avaliable.
+                      </option>
+                    ) : (
+                      <option value={null} name={null}>
+                        Select Unit
+                      </option>
+                    )}
+                    {Booking.floor === null ? (
+                      <option value={null} name={null}>
+                        Select Floor
+                      </option>
+                    ) : (
+                      allUnits.length > 0 &&
+                      allUnits.map(i => {
+                        let s = "";
+                        s = i.unit_name;
+                        s = s.slice(0, 1);
+                        if (s === Booking.floor) {
+                          return (
+                            <option value={i?._id} name={i?._id}>
+                              {i?.unit_name}
+                            </option>
+                          );
+                        }
+                      })
+                    )}
                   </>
-                }
+                )}
               </select>
             </div>
           </div>
@@ -691,25 +966,31 @@ const SetBooking = () => {
               name="parking"
               required=""
               value={Booking.parking}
-              onChange={(e) => { handleInputs(e); }}
+              onChange={e => {
+                handleInputs(e);
+              }}
             />
           </div>
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Parking Price</p>
-            {Booking.parking_price !== null ?
-            <input
-            type="number"
-            aria-label="Parking Price"
-            placeholder="Parking Price"
-            className="form-control"
-            id="parking_price"
-            step="0.01"
-            name="parking_price"
-            required=""
-            value={Booking.parking_price}
-            onChange={(e) => { handleInputs(e); }}
-          />
-           : <p className="text-alternate">Loading...</p>}
+            {Booking.parking_price !== null ? (
+              <input
+                type="number"
+                aria-label="Parking Price"
+                placeholder="Parking Price"
+                className="form-control"
+                id="parking_price"
+                step="0.01"
+                name="parking_price"
+                required=""
+                value={Booking.parking_price}
+                onChange={e => {
+                  handleInputs(e);
+                }}
+              />
+            ) : (
+              <p className="text-alternate">Loading...</p>
+            )}
           </div>
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Booking Price</p>
@@ -722,7 +1003,9 @@ const SetBooking = () => {
               name="booking_price"
               required=""
               value={Booking.booking_price}
-              onChange={(e) => { handleInputs(e); }}
+              onChange={e => {
+                handleInputs(e);
+              }}
             />
           </div>
           <div className="col-md-4 col-12 mb-2">
@@ -736,7 +1019,9 @@ const SetBooking = () => {
               name="unitPrice"
               required=""
               value={Booking.unitPrice}
-              onChange={(e) => { handleInputs(e);}}
+              onChange={e => {
+                handleInputs(e);
+              }}
             />
           </div>
 
@@ -765,14 +1050,20 @@ const SetBooking = () => {
               </div>
             </div>
             <div className="col-md-3 col-12 mb-2">
-              <button onClick={()=>getTotalPrice()} class="btn btn-outline-primary btn-md " type="button">Fetch Total Price</button>
+              <button
+                onClick={() => getTotalPrice()}
+                class="btn btn-outline-primary btn-md "
+                type="button"
+              >
+                Fetch Total Price
+              </button>
             </div>
           </div>
-          <div className="row">
+          <div className="row my-3">
             <h5 className="text-alternate">Maintenance Charges</h5>
             <hr />
             <div className="col-md-3 col-12">
-               <p className="text-alternate">Total Saleable Area</p>
+              <p className="text-alternate">Total Saleable Area</p>
               <div className="input-group">
                 <input
                   type="text"
@@ -787,7 +1078,7 @@ const SetBooking = () => {
               </div>
             </div>
             <div className="col-md-3 col-12">
-               <p className="text-alternate">Charges Per sqft</p>
+              <p className="text-alternate">Charges Per sqft</p>
               <div className="input-group">
                 <input
                   type="text"
@@ -802,7 +1093,7 @@ const SetBooking = () => {
               </div>
             </div>
             <div className="col-md-3 col-12">
-               <p className="text-alternate">Total No Of Year</p>
+              <p className="text-alternate">Total No Of Year</p>
               <div className="input-group">
                 <input
                   type="number"
@@ -817,7 +1108,7 @@ const SetBooking = () => {
               </div>
             </div>
             <div className="col-md-3 col-12">
-               <p className="text-alternate">Total Maintenance Charge</p>
+              <p className="text-alternate">Total Maintenance Charge</p>
               <div className="input-group">
                 <input
                   type="text"
@@ -833,7 +1124,7 @@ const SetBooking = () => {
             </div>
           </div>
 
-          <div className="col-md-4 col-12 mb-2">
+          <div className="col-md-4 mb-2 col-12 mb-2">
             <p className="text-alternate"> Booking Date</p>
             <div className="input-group">
               <input
@@ -875,7 +1166,6 @@ const SetBooking = () => {
               />
             </div>
           </div>
-
 
           <h3 className="text-alternate text-primary">First Applicant</h3>
           <hr />
@@ -1078,7 +1368,13 @@ const SetBooking = () => {
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate"> Relegion</p>
             <div className="input-group">
-              <select className="form-control" id="relegion" onChange={handleInputs} value={Booking.first_applicant_religion} name="first_applicant_religion" >
+              <select
+                className="form-control"
+                id="relegion"
+                onChange={handleInputs}
+                value={Booking.first_applicant_religion}
+                name="first_applicant_religion"
+              >
                 <option value="">-- select one --</option>
                 <option value="Hinduism">Hinduism</option>
                 <option value="Islam">Islam</option>
@@ -1139,7 +1435,6 @@ const SetBooking = () => {
               />
             </div>
           </div>
-
 
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate"> Contact No.</p>
@@ -1218,7 +1513,6 @@ const SetBooking = () => {
                 type="text"
                 className="form-control"
                 id="secondApplicantOccupation"
-
                 onChange={handleInputs}
                 value={Booking?.second_applicant_occupation}
                 name="second_applicant_occupation"
@@ -1254,7 +1548,6 @@ const SetBooking = () => {
             </div>
           </div>
 
-
           <h3 className="text-alternate text-primary">More Co Applicant</h3>
           <hr />
           <div className="col-md-6 col-12 mb-2">
@@ -1278,7 +1571,6 @@ const SetBooking = () => {
                 type="number"
                 className="form-control"
                 id="thirdApplicantPhoneNo"
-
                 onChange={handleInputs}
                 value={Booking?.third_applicant_phone_number}
                 name="third_applicant_phone_number"
@@ -1315,7 +1607,6 @@ const SetBooking = () => {
             </div>
           </div>
 
-
           <div className="col-md-12 col-12 text-right">
             {isEdit ? (
               <>
@@ -1348,10 +1639,9 @@ const SetBooking = () => {
                 Create{" "}
               </button>
             )}
-
           </div>
         </form>
-        {!isEdit &&
+        {!isEdit && (
           <form
             className="row px-4 py-4 mx-2 my-2 shadow-lg needs-validation"
             novalidate
@@ -1375,7 +1665,14 @@ const SetBooking = () => {
                       <td>{i?.first_applicant_contactNumber}</td>
                       <td>{i?.booking_price}</td>
                       <td>
-                        <Edit className="cursor-pointer" color="green" size={30} onClick={() => { edit(i) }} />
+                        <Edit
+                          className="cursor-pointer"
+                          color="green"
+                          size={30}
+                          onClick={() => {
+                            edit(i);
+                          }}
+                        />
                         <Trash
                           className="cursor-pointer"
                           color="red"
@@ -1391,24 +1688,23 @@ const SetBooking = () => {
               </table>
             </div>
           </form>
-        }
+        )}
       </div>
     </>
   );
 };
 
-
 export default SetBooking;
 
-const DataTableCustom = (props) => {
+const DataTableCustom = props => {
   const { state, setState } = props;
   let { data, columns, value, filteredData } = state;
   let val, name;
-  const handleOnchange = (e) => {
+  const handleOnchange = e => {
     name = e.target.name;
     val = e.target.value;
     setState({ ...state, [name]: val });
-  }
+  };
   const [modal, setModal] = useState(false);
   const [Data, setData] = useState({
     name: null,
@@ -1420,32 +1716,34 @@ const DataTableCustom = (props) => {
   });
   const [price, setPrice] = useState(null);
 
-  const onChange = (e) => {
+  const onChange = e => {
     name = e.target.name;
     val = e.target.value;
     setData({ ...Data, [name]: val });
-  }
+  };
   const toggleModal = () => {
     if (modal) setModal(false);
     else setModal(true);
-  }
+  };
   const updateModal = () => {
     setState({ ...state, data: data.concat(Data) });
     console.log(state);
     if (modal) setModal(false);
     else setModal(true);
-  }
+  };
 
-  const toggleFacility = async (facility) => {
+  const toggleFacility = async facility => {
     // Check if the facility is already in selectedFacilities
     const isAlreadySelected = await state.selectedFacilities.some(
-      (selectedFacility) => selectedFacility.extra_facility === facility.extra_facility
+      selectedFacility =>
+        selectedFacility.extra_facility === facility.extra_facility
     );
 
     if (isAlreadySelected) {
       // Remove the facility from selectedFacilities
       const updatedSelectedFacilities = await state.selectedFacilities.filter(
-        (selectedFacility) => selectedFacility.extra_facility !== facility.extra_facility
+        selectedFacility =>
+          selectedFacility.extra_facility !== facility.extra_facility
       );
       setState({ ...state, selectedFacilities: updatedSelectedFacilities });
     } else {
@@ -1457,9 +1755,7 @@ const DataTableCustom = (props) => {
     }
   };
 
-
   if (state?.data?.length > 0) {
-
     return (
       <div>
         <CardHeader>
@@ -1478,15 +1774,18 @@ const DataTableCustom = (props) => {
               </tr>
             </thead>
             <tbody>
-              {state.data.map((facility) => (
+              {state.data.map(facility => (
                 <tr>
                   <td>
                     <input
                       type="checkbox"
-                      onChange={() => { toggleFacility(facility); }}
+                      onChange={() => {
+                        toggleFacility(facility);
+                      }}
                       checked={state.selectedFacilities.some(
-                        (selectedFacility) =>
-                          selectedFacility.extra_facility === facility.extra_facility
+                        selectedFacility =>
+                          selectedFacility.extra_facility ===
+                          facility.extra_facility
                       )}
                     />
                   </td>
@@ -1507,6 +1806,6 @@ const DataTableCustom = (props) => {
       <CardHeader>
         <h5>No Extra Facilities Avaliable</h5>
       </CardHeader>
-    )
+    );
   }
-}
+};
