@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
-import { Edit, Trash } from "react-feather";
+import { Edit, Edit2, Trash } from "react-feather";
 import { useHistory } from "react-router-dom";
-import { Badge, CardBody, CardHeader } from "reactstrap";
+import { Badge, Button, CardBody, CardHeader, Input, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import swal from "sweetalert";
 
 const renderOptions = n => {
@@ -101,8 +101,12 @@ const SetBooking = () => {
         },
       },
     ],
-    data: [],
-    filteredData: [],
+    data: [
+      
+    ],
+    filteredData: [
+   
+    ],
     selectedFacilities: [],
     value: "",
   });
@@ -174,7 +178,9 @@ const SetBooking = () => {
         },
       },
     ],
-    data: [],
+    data: [
+      
+     ],
     filteredData: [],
     selectedFacilities: [],
     value: "",
@@ -750,10 +756,10 @@ const SetBooking = () => {
     let price =
       Booking?.parking_price !== null && Booking?.parking >= 1
         ? parseFloat(calculateTotalPrice()) +
-          parseFloat(
-            Booking.parking_price * Booking.parking +
-              Booking.parking_price * Booking.parking * 0.01
-          )
+        parseFloat(
+          Booking.parking_price * Booking.parking +
+          Booking.parking_price * Booking.parking * 0.01
+        )
         : calculateTotalPrice();
     if (Booking.demandRate !== null && Booking.unitPrice !== null) {
       price = parseFloat(price) + parseFloat(Booking.unitPrice);
@@ -1084,10 +1090,10 @@ const SetBooking = () => {
                   type="text"
                   className="form-control"
                   id="charges"
+                  onChange={handleInputs}
                   name="charges"
                   value={Booking.charges}
                   required=""
-                  disabled
                   placeholder="Can't Find"
                 />
               </div>
@@ -1736,14 +1742,14 @@ const DataTableCustom = props => {
     // Check if the facility is already in selectedFacilities
     const isAlreadySelected = await state.selectedFacilities.some(
       selectedFacility =>
-        selectedFacility.extra_facility === facility.extra_facility
+        selectedFacility.extra_facility === facility.extra_facility && selectedFacility.name === facility.name
     );
 
     if (isAlreadySelected) {
       // Remove the facility from selectedFacilities
       const updatedSelectedFacilities = await state.selectedFacilities.filter(
         selectedFacility =>
-          selectedFacility.extra_facility !== facility.extra_facility
+          selectedFacility.extra_facility !== facility.extra_facility && selectedFacility.name !== facility.name
       );
       setState({ ...state, selectedFacilities: updatedSelectedFacilities });
     } else {
@@ -1754,6 +1760,67 @@ const DataTableCustom = props => {
       });
     }
   };
+
+  
+  const [EditModal, setEditModal] = useState(false);
+  const [EditElement, setEditElement] = useState({
+    name: "",
+    Status: "initiated",
+    sgst: "9%",
+    cgst: "9%",
+    extra_facility: "",
+    totalPrice: 0,
+  });
+
+  const [currentIndex, setCurrentIndex] = useState(-1);
+
+  function updateFieldAtIndex() {
+    let prevData = state.data;
+    let updatedObj = {
+      name: EditElement.name,
+      Status: EditElement.Status,
+      sgst: EditElement.sgst,
+      cgst: EditElement.cgst,
+      extra_facility: EditElement.extra_facility,
+      totalPrice: EditElement.totalPrice
+    }
+    console.log(currentIndex);
+    if (currentIndex >= 0 && currentIndex < data.length && prevData.length > 0) {
+      prevData[currentIndex] = updatedObj;
+      console.log({prev:prevData, udpate:updatedObj,index:currentIndex});
+      setState({ ...state, data: prevData });
+      setEditModal(false);
+    } else {
+      return;
+    }
+  }
+
+  const setTotalEditPrice = (val) => {
+    let price = parseFloat(val) + (parseFloat(val) * 0.18);
+    setEditElement({ ...EditElement, totalPrice: price.toFixed(2) });
+  }
+
+  
+  function closeEdit(){
+    if (EditModal) setEditModal(false);
+  }
+
+  function toggleEditScreen(prevData,index) {
+    setCurrentIndex(index);
+    if (EditModal) setEditModal(false);
+    else {
+      setEditModal(true);
+      setEditElement({
+        name: prevData.name,
+        Status: prevData.Status,
+        sgst: prevData.sgst,
+        cgst: prevData.cgst,
+        extra_facility: prevData.extra_facility,
+        totalPrice: prevData.totalPrice
+      })
+
+    }
+  }
 
   if (state?.data?.length > 0) {
     return (
@@ -1771,33 +1838,65 @@ const DataTableCustom = props => {
                 <th>SGST</th>
                 <th>CGST</th>
                 <th>Total Price</th>
+                <th>Edit Price</th>
               </tr>
             </thead>
             <tbody>
-              {state.data.map(facility => (
-                <tr>
-                  <td>
-                    <input
-                      type="checkbox"
-                      onChange={() => {
-                        toggleFacility(facility);
-                      }}
-                      checked={state.selectedFacilities.some(
-                        selectedFacility =>
-                          selectedFacility.extra_facility ===
-                          facility.extra_facility
-                      )}
-                    />
-                  </td>
-                  <td>{facility.extra_facility}</td>
-                  <td>{facility.name}</td>
-                  <td>{facility.sgst}</td>
-                  <td>{facility.cgst}</td>
-                  <td>{facility.totalPrice}</td>
-                </tr>
-              ))}
+              {state.data.map((facility, index) => {
+                return (
+                  <tr className="rounded shadow-sm">
+                    <td className="p-2">
+                      <input
+                        type="checkbox"
+                        onChange={() => {
+                          toggleFacility(facility);
+                        }}
+                        checked={state.selectedFacilities.some(
+                          selectedFacility =>
+                            selectedFacility.extra_facility ===
+                            facility.extra_facility && selectedFacility.name === facility.name
+                        )}
+                      />
+                    </td>
+                    <td className="">{facility.extra_facility}</td>
+                    <td className="">{facility.name}</td>
+                    <td className="">{facility.sgst}</td>
+                    <td className="">{facility.cgst}</td>
+                    <td className="">{facility.totalPrice}</td>
+                    <td className=""><Edit2 color="orange" className="cursor-pointer" size={18} onClick={()=>toggleEditScreen(facility,index)} /></td>
+                  </tr>
+                )
+              }
+              )}
             </tbody>
           </table>
+          <Modal
+            isOpen={EditModal}
+            toggle={closeEdit}
+            className="modal-dialog-centered"
+            fade={false}
+          >
+            <ModalHeader toggle={closeEdit}>
+              Update Facility Price
+            </ModalHeader>
+            <ModalBody className="modal-dialog-centered d-flex flex-column align-items-start justify-center space-around">
+              <p className="mb-1">Previous Price</p>
+              <Input type="text" id="totalPrice" value={EditElement.totalPrice} name="totalPrice" />
+              <p className="mt-1">New Price(without 18% GST)</p>
+              <p className="mb-1">GST will be added at checkout</p>
+              <Input type="text" id="totalPrice" onChange={(e) => setTotalEditPrice(e.target.value)} name="totalPrice" placeholder={`Previous Price: ${EditElement.totalPrice} current Price: 0`} />
+              <p className="mb-1">Total Price including GST</p>
+              <Input type="text" id="Final" value={EditElement.totalPrice || 0} name="totalPrice" placeholder="Price" />
+            </ModalBody>
+            <ModalFooter>
+              <Button color="warning" onClick={() => closeEdit()}>
+                cancel
+              </Button>{" "}
+              <Button color="primary" onClick={() => updateFieldAtIndex()}>
+                Update Price
+              </Button>{" "}
+            </ModalFooter>
+          </Modal>
         </CardBody>
       </div>
     );
