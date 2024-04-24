@@ -231,8 +231,8 @@ const CreateUnit = () => {
     getAllUnits();
   }, [])
 
-  const setTotalPrice = async() => {
-    if (CreateUnit.total_area_this_unit != null && CreateUnit.price != null) {
+  const setTotalPrice = () => {
+    if(CreateUnit.total_area_this_unit&&CreateUnit.sgst&&CreateUnit.cgst&&CreateUnit.price){
       let Saleable = document.getElementById('totalArea');
       let sqft = document.getElementById('price');
       let total = document.getElementById('pricewithtax');
@@ -249,6 +249,11 @@ const CreateUnit = () => {
     var check = document.getElementById('multiple');
     check.checked?setCreateUnit({...CreateUnit, multiple:true}):setCreateUnit({...CreateUnit, multiple:false});
   }
+
+  useEffect(() => {
+    setTotalPrice();
+  }, [CreateUnit.total_area_this_unit,CreateUnit.sgst,CreateUnit.cgst,CreateUnit.price]);
+  
 
 
   return (
@@ -331,7 +336,7 @@ const CreateUnit = () => {
                 className="form-control"
                 id="totalArea"
                 name="total_area_this_unit"
-                onChange={(e) => { handleInputs(e); setTotalPrice(); }}
+                onChange={(e) => { handleInputs(e);}}
                 value={CreateUnit.total_area_this_unit}
                 required=""
               />
@@ -441,7 +446,7 @@ const CreateUnit = () => {
                 className="form-control"
                 name='price'
                 id='price'
-                onChange={(e) => { handleInputs(e); setTotalPrice(); }}
+                onChange={(e) => { handleInputs(e);}}
                 value={CreateUnit.price}
               />
             </div>
@@ -456,7 +461,7 @@ const CreateUnit = () => {
                 className="form-control"
                 name='sgst'
                 id='sgst'
-                onChange={(e) => { handleInputs(e); setTotalPrice(); }}
+                onChange={(e) => { handleInputs(e);}}
                 value={CreateUnit.sgst}
               />
             </div>
@@ -471,7 +476,7 @@ const CreateUnit = () => {
                 className="form-control"
                 name='cgst'
                 id='cgst'
-                onChange={(e) => { handleInputs(e); setTotalPrice(); }}
+                onChange={(e) => { handleInputs(e);}}
                 value={CreateUnit.cgst}
               />
             </div>

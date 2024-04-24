@@ -102,10 +102,10 @@ const SetBooking = () => {
       },
     ],
     data: [
-      
+
     ],
     filteredData: [
-   
+
     ],
     selectedFacilities: [],
     value: "",
@@ -179,8 +179,8 @@ const SetBooking = () => {
       },
     ],
     data: [
-      
-     ],
+
+    ],
     filteredData: [],
     selectedFacilities: [],
     value: "",
@@ -198,7 +198,7 @@ const SetBooking = () => {
 
       return parseFloat(totalPrice).toFixed(2);
     }
-    return 0.0; // Return 0 if no facilities are selected
+    return 0; // Return 0 if no facilities are selected
   };
   const [isEdit, setIsEdit] = useState(false);
   const [AllBooking, setAllBooking] = useState(null);
@@ -247,6 +247,7 @@ const SetBooking = () => {
     id: null,
     price_with_tax: null,
     parking_price: null,
+    unitAmount:null,
     totalAmount: null,
     bookingPrice: null,
     unitPrice: null,
@@ -255,6 +256,9 @@ const SetBooking = () => {
     charges: 0,
     yearDuration: 0,
     MaintenanceCharges: 0,
+    sgst: 0,
+    cgst: 0,
+    tax: 1,
   });
   const uploadBooking = async () => {
     const res = await axios.post(
@@ -641,7 +645,7 @@ const SetBooking = () => {
     }
   };
 
-  const getPrice = async (id, unit_price, salablePrice, SalableArea) => {
+  const getPrice = async (id, unit_price, salablePrice, SalableArea, sgst, cgst) => {
     const data = {
       Project: Booking.Project,
       building: buildingId.value,
@@ -663,6 +667,8 @@ const SetBooking = () => {
         unitPrice: unit_price,
         area: SalableArea,
         charges: salablePrice.toFixed(2),
+        sgst: sgst,
+        cgst: cgst,
       });
     } else {
       setBooking({
@@ -671,13 +677,18 @@ const SetBooking = () => {
         unitPrice: unit_price,
         area: SalableArea,
         charges: salablePrice.toFixed(2),
+        sgst: sgst,
+        cgst: cgst,
       });
     }
   };
 
   const onMaintenanceChange = e => {
     let value = e.target.value;
-    let totalPrice = Booking.area * Booking.charges * value;
+    let charges = document.getElementById("charges");
+    if (!charges || !value) return;
+    let chargesValue = parseFloat(charges.value);
+    let totalPrice = Booking.area * chargesValue * value;
     setBooking({
       ...Booking,
       yearDuration: value,
@@ -696,7 +707,7 @@ const SetBooking = () => {
       SalablePrice = resp.data.price;
       SalableArea = resp.data.total_area_this_unit;
     }
-    await getPrice(id, price, SalablePrice, SalableArea);
+    await getPrice(id, price, SalablePrice, SalableArea, resp.data.sgst, resp.data.cgst);
   };
 
   const closeEdit = () => {
@@ -753,16 +764,12 @@ const SetBooking = () => {
   };
 
   const getTotalPrice = async () => {
-    let price =
-      Booking?.parking_price !== null && Booking?.parking >= 1
-        ? parseFloat(calculateTotalPrice()) +
-        parseFloat(
-          Booking.parking_price * Booking.parking +
-          Booking.parking_price * Booking.parking * 0.01
-        )
-        : calculateTotalPrice();
-    if (Booking.demandRate !== null && Booking.unitPrice !== null) {
-      price = parseFloat(price) + parseFloat(Booking.unitPrice);
+    let price = calculateTotalPrice();
+    if (Booking.unitPrice !== null) {
+      let Consideration = parseFloat(Booking?.parking_price !== null && Booking?.parking >= 1 ? parseFloat(Booking?.parking_price) + parseFloat(Booking.unitPrice) : Booking.unitPrice);
+      console.log(price, Consideration);
+      price = parseFloat(price) + parseFloat(Consideration * ((Booking.tax) / 100)) + parseFloat(Consideration);
+      console.log({ updated: price, Consideration, gst: Consideration * ((Booking.tax) / 100), appliedGST: (Booking.tax / 100) });
       setBooking({ ...Booking, totalAmount: price.toFixed(2) });
     }
   };
@@ -1039,23 +1046,29 @@ const SetBooking = () => {
             
           </div> */}
           <div className="row my-1">
-            <div className="col-md-7 col-12 mb-2">
-              {/* <p className="text-alternate">Total Amount</p> */}
+            <div className="col-md-4 col-12 mb-2">
+              <p className="text-alternate">Location Type</p>
               <div className="input-group">
-                <input
-                  type="text"
+                <select
                   className="form-control"
-                  id="totalAmount"
-                  name="totalAmount"
-                  value={Booking.totalAmount}
-                  onChange={handleInputs}
-                  required=""
-                  disabled
-                  placeholder="Click to Fetch Total Price"
-                />
+                  id="tax"
+                  onChange={e => {
+                    handleInputs(e);
+                  }}
+                  name="tax"
+                  value={Booking.tax}
+                >
+                  <option name={"Rural"} value={1}>
+                    Rural
+                  </option>
+                  <option name={"Urban"} value={5}>
+                    Urban
+                  </option>
+                </select>
               </div>
             </div>
-            <div className="col-md-3 col-12 mb-2">
+            <div className="col-md-8 col-12 mb-2">
+              <p className="text-alternate">Fetch Price</p>
               <button
                 onClick={() => getTotalPrice()}
                 class="btn btn-outline-primary btn-md "
@@ -1063,6 +1076,38 @@ const SetBooking = () => {
               >
                 Fetch Total Price
               </button>
+            </div>
+            <div className="col-md-5 col-12 mb-2">
+              <p className="text-alternate">Total Amount</p>
+              <div className="input-group">
+                <input
+                  type="number"
+                  className="form-control"
+                  id="totalAmount"
+                  name="totalAmount"
+                  value={parseFloat(Booking.totalAmount).toFixed(2)}
+                  onChange={handleInputs}
+                  required=""
+                  disabled
+                  placeholder="Click to Fetch Total Price"
+                />
+              </div>
+            </div>
+            <div className="col-md-5 col-12 mb-2">
+              <p className="text-alternate">Total Due</p>
+              <div className="input-group">
+                <input
+                  type="number"
+                  className="form-control"
+                  id="totalAmount"
+                  name="totalAmount"
+                  value={parseFloat(Booking.totalAmount - Booking.booking_price).toFixed(2)}
+                  onChange={handleInputs}
+                  required=""
+                  disabled
+                  placeholder="Click to Fetch Total Price"
+                />
+              </div>
             </div>
           </div>
           <div className="row my-3">
@@ -1099,7 +1144,7 @@ const SetBooking = () => {
               </div>
             </div>
             <div className="col-md-3 col-12">
-              <p className="text-alternate">Total No Of Year</p>
+              <p className="text-alternate">Total No Of Months</p>
               <div className="input-group">
                 <input
                   type="number"
@@ -1761,7 +1806,7 @@ const DataTableCustom = props => {
     }
   };
 
-  
+
   const [EditModal, setEditModal] = useState(false);
   const [EditElement, setEditElement] = useState({
     name: "",
@@ -1787,7 +1832,7 @@ const DataTableCustom = props => {
     console.log(currentIndex);
     if (currentIndex >= 0 && currentIndex < data.length && prevData.length > 0) {
       prevData[currentIndex] = updatedObj;
-      console.log({prev:prevData, udpate:updatedObj,index:currentIndex});
+      console.log({ prev: prevData, udpate: updatedObj, index: currentIndex });
       setState({ ...state, data: prevData });
       setEditModal(false);
     } else {
@@ -1800,12 +1845,12 @@ const DataTableCustom = props => {
     setEditElement({ ...EditElement, totalPrice: price.toFixed(2) });
   }
 
-  
-  function closeEdit(){
+
+  function closeEdit() {
     if (EditModal) setEditModal(false);
   }
 
-  function toggleEditScreen(prevData,index) {
+  function toggleEditScreen(prevData, index) {
     setCurrentIndex(index);
     if (EditModal) setEditModal(false);
     else {
@@ -1863,7 +1908,7 @@ const DataTableCustom = props => {
                     <td className="">{facility.sgst}</td>
                     <td className="">{facility.cgst}</td>
                     <td className="">{facility.totalPrice}</td>
-                    <td className=""><Edit2 color="orange" className="cursor-pointer" size={18} onClick={()=>toggleEditScreen(facility,index)} /></td>
+                    <td className=""><Edit2 color="orange" className="cursor-pointer" size={18} onClick={() => toggleEditScreen(facility, index)} /></td>
                   </tr>
                 )
               }
