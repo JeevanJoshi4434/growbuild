@@ -85,7 +85,7 @@ const CreateUnit = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [allUnit, setAllUnit] = useState(null);
   const [CreateUnit, setCreateUnit] = useState({
-    Project: null, building: null, unit_name: null, total_area_this_unit: null, carpet_area: null, build_up_area: null, balcony_area: null, total_number_of_flat_on_this_unit: null, parking_detail: null, extra_facilities: null, id: null, price: null, TotalPrice: null,sgst:null,cgst:null, pricewithtax: null,multiple:false,floors:0,units:0
+    Project: null, building: null, unit_name: null, total_area_this_unit: null, carpet_area: null, build_up_area: null, balcony_area: null, total_number_of_flat_on_this_unit: null, parking_detail: null, extra_facilities: null, id: null, price: null, TotalPrice: null, sgst: null, cgst: null, pricewithtax: null, multiple: false, floors: 0, units: 0
   });
   const [allBuilding, setAllBuilding] = useState(null);
   const [Building, setBuilding] = useState(null);
@@ -161,14 +161,14 @@ const CreateUnit = () => {
       total_number_of_flat_on_this_unit: CreateUnit.total_number_of_flat_on_this_unit,
       parking_detail: CreateUnit.parking_detail,
       extra_facilities: state.data,
-      price:CreateUnit.price ,
+      price: CreateUnit.price,
       totalPrice: totalPrice.value,
-      sgst:CreateUnit.sgst,
-      cgst:CreateUnit.cgst,
-      pricewithtax:totalPrice.value,
-      multiple:CreateUnit.multiple,
-      floors:CreateUnit.floors,
-      units:CreateUnit.units
+      sgst: CreateUnit.sgst,
+      cgst: CreateUnit.cgst,
+      pricewithtax: totalPrice.value,
+      multiple: CreateUnit.multiple,
+      floors: CreateUnit.floors,
+      units: CreateUnit.units
     })
     if (res.status === 200) {
       window.alert("Unit Upload Done!");
@@ -185,36 +185,52 @@ const CreateUnit = () => {
     }
   }
   const edit = async (data) => {
-    setCreateUnit({ ...CreateUnit, Project: data?.Project, building: data?.building, unit_name: data?.unit_name, total_area_this_unit: data?.total_area_this_unit, carpet_area: data?.carpet_area, build_up_area: data?.build_up_area, balcony_area: data?.balcony_area, total_number_of_flat_on_this_unit: data?.total_number_of_flat_on_this_unit, parking_detail: data?.parking_detail, extra_facilities: "", id: data?._id ,pricewithtax:data?.pricewithtax,sgst:data?.sgst,cgst:data?.cgst});
+    setCreateUnit({ ...CreateUnit, Project: data?.Project, building: data?.building, unit_name: data?.unit_name, total_area_this_unit: data?.total_area_this_unit, carpet_area: data?.carpet_area, build_up_area: data?.build_up_area, balcony_area: data?.balcony_area, total_number_of_flat_on_this_unit: data?.total_number_of_flat_on_this_unit, parking_detail: data?.parking_detail, extra_facilities: "", id: data?._id, pricewithtax: data?.pricewithtax, sgst: data?.sgst, cgst: data?.cgst });
     setIsEdit(true)
     await getBuildings(data?.Project);
-    setCreateUnit({ ...CreateUnit, Project: data?.Project, building: data?.building, unit_name: data?.unit_name, total_area_this_unit: data?.total_area_this_unit, carpet_area: data?.carpet_area, build_up_area: data?.build_up_area, balcony_area: data?.balcony_area, total_number_of_flat_on_this_unit: data?.total_number_of_flat_on_this_unit, parking_detail: data?.parking_detail, extra_facilities: "", id: data?._id, price: data?.price, TotalPrice: data?.totalPrice,pricewithtax:data?.pricewithtax,sgst:data?.sgst,cgst:data?.cgst });
-    setState({...state, data:data?.extra_facilities});
+    setCreateUnit({ ...CreateUnit, Project: data?.Project, building: data?.building, unit_name: data?.unit_name, total_area_this_unit: data?.total_area_this_unit, carpet_area: data?.carpet_area, build_up_area: data?.build_up_area, balcony_area: data?.balcony_area, total_number_of_flat_on_this_unit: data?.total_number_of_flat_on_this_unit, parking_detail: data?.parking_detail, extra_facilities: "", id: data?._id, price: data?.price, TotalPrice: data?.totalPrice, pricewithtax: data?.pricewithtax, sgst: data?.sgst, cgst: data?.cgst });
+    setState({ ...state, data: data?.extra_facilities });
   }
 
   const updateUnit = async (id) => {
-    const res = await axios.put(`${process.env.REACT_APP_PORT}/api/update/unit/${id}`, {
-      Project: CreateUnit.Project,
-      building: CreateUnit.building,
-      unit_name: CreateUnit.unit_name,
-      total_area_this_unit: CreateUnit.total_area_this_unit,
-      carpet_area: CreateUnit.carpet_area,
-      build_up_area: CreateUnit.build_up_area,
-      balcony_area: CreateUnit.balcony_area,
-      total_number_of_flat_on_this_unit: CreateUnit.total_number_of_flat_on_this_unit,
-      parking_detail: CreateUnit.parking_detail,
-      extra_facilities: state.data,
-      price: CreateUnit.pricewithtax,
-      totalPrice: CreateUnit.pricewithtax,
-      sgst:CreateUnit.sgst,
-      cgst:CreateUnit.cgst,
-      pricewithtax:CreateUnit.pricewithtax,
-    })
-    if (res.status === 200) {
-      swal("Unit Updated!");
-      setTimeout(() => {
-        history.go(0);
-      }, 2000);
+    var price = document.getElementById('price');
+    var totalPrice = document.getElementById('pricewithtax');
+    console.log(
+      {
+        price: parseFloat(price.value).toFixed(2),
+        totalPrice: parseFloat(totalPrice.value).toFixed(2),
+        priceNormal: price,
+        priceWithTax: totalPrice
+      }
+    )
+    try {
+      if (price && totalPrice) {
+        const res = await axios.put(`${process.env.REACT_APP_PORT}/api/update/unit/${id}`, {
+          Project: CreateUnit.Project,
+          building: CreateUnit.building,
+          unit_name: CreateUnit.unit_name,
+          total_area_this_unit: CreateUnit.total_area_this_unit,
+          carpet_area: CreateUnit.carpet_area,
+          build_up_area: CreateUnit.build_up_area,
+          balcony_area: CreateUnit.balcony_area,
+          total_number_of_flat_on_this_unit: CreateUnit.total_number_of_flat_on_this_unit,
+          parking_detail: CreateUnit.parking_detail,
+          extra_facilities: state.data,
+          price: parseFloat(price.value).toFixed(2),
+          totalPrice: parseFloat(totalPrice.value).toFixed(2),
+          sgst: CreateUnit.sgst,
+          cgst: CreateUnit.cgst,
+          pricewithtax: parseFloat(totalPrice.value).toFixed(2),
+        })
+        if (res.status === 200) {
+          swal("Unit Updated!");
+          setTimeout(() => {
+            history.go(0);
+          }, 2000);
+        }
+      }
+    } catch (error) {
+
     }
   }
 
@@ -232,7 +248,7 @@ const CreateUnit = () => {
   }, [])
 
   const setTotalPrice = () => {
-    if(CreateUnit.total_area_this_unit&&CreateUnit.sgst&&CreateUnit.cgst&&CreateUnit.price){
+    if (CreateUnit.total_area_this_unit && CreateUnit.sgst && CreateUnit.cgst && CreateUnit.price) {
       let Saleable = document.getElementById('totalArea');
       let sqft = document.getElementById('price');
       let total = document.getElementById('pricewithtax');
@@ -240,21 +256,70 @@ const CreateUnit = () => {
       let cgst = document.getElementById('cgst');
       let price = 0;
       price = parseFloat(Saleable.value * sqft.value);
-      price = parseFloat(price) + (parseFloat(price)*(parseFloat(sgst.value/100)+parseFloat(cgst.value/100)));
+      price = parseFloat(price) + (parseFloat(price) * (parseFloat(sgst.value / 100) + parseFloat(cgst.value / 100)));
       total.value = price.toFixed(2);
     }
   }
 
-  const handleMultipleBehavior =()=>{
+  const handleMultipleBehavior = () => {
     var check = document.getElementById('multiple');
-    check.checked?setCreateUnit({...CreateUnit, multiple:true}):setCreateUnit({...CreateUnit, multiple:false});
+    check.checked ? setCreateUnit({ ...CreateUnit, multiple: true }) : setCreateUnit({ ...CreateUnit, multiple: false });
   }
 
   useEffect(() => {
     setTotalPrice();
-  }, [CreateUnit.total_area_this_unit,CreateUnit.sgst,CreateUnit.cgst,CreateUnit.price]);
-  
+  }, [CreateUnit.total_area_this_unit, CreateUnit.sgst, CreateUnit.cgst, CreateUnit.price]);
 
+  const exitEdit = () => {
+    setCreateUnit({
+      ...CreateUnit,
+      Project: null,
+      building: null,
+      unit_name: null,
+      total_area_this_unit: null,
+      carpet_area: null,
+      build_up_area: null,
+      balcony_area: null,
+      total_number_of_flat_on_this_unit: null,
+      parking_detail: null,
+      extra_facilities: null, 
+      id: null,
+      sgst: null, 
+      cgst: null, 
+      price: null,
+      pricewithtax: null,
+      TotalPrice: null, 
+      multiple: false,
+      floors: 0,
+      units: 0
+    });
+    setIsEdit(false);
+    var project = document.getElementById('project');
+    var building = document.getElementById('building');
+    var unitName = document.getElementById('unitName');
+    var totalArea = document.getElementById('totalArea');
+    var carpetArea = document.getElementById('carpet');
+    var buildUpArea = document.getElementById('builtup');
+    var balconyArea = document.getElementById('balcony');
+    var price = document.getElementById('price');
+    var pricewithtax = document.getElementById('pricewithtax');
+    var sgst = document.getElementById('sgst');
+    var cgst = document.getElementById('cgst');
+    var floors = document.getElementById('floors');
+    project.value = null;
+    building.value = null;
+    unitName.value = '';
+    totalArea.value = 0;
+    carpetArea.value = 0;
+    buildUpArea.value = 0;
+    balconyArea.value = 0;
+    price.value = 0;
+    pricewithtax.value = 0;
+    sgst.value = 0;
+    cgst.value = 0;
+    floors.value = 0;
+
+  }
 
   return (
     <>
@@ -336,26 +401,26 @@ const CreateUnit = () => {
                 className="form-control"
                 id="totalArea"
                 name="total_area_this_unit"
-                onChange={(e) => { handleInputs(e);}}
+                onChange={(e) => { handleInputs(e); }}
                 value={CreateUnit.total_area_this_unit}
                 required=""
               />
             </div>
           </div>
-          {CreateUnit.multiple && 
-          <div className="col-md-3 col-12 mb-2">
-            <p className="text-alternate">Total Floors</p>
-            <div className="input-group">
-              <input
-                type="number"
-                className="form-control"
-                id="floors"
-                name="floors"
-                onChange={(e) => { handleInputs(e);}}
-                value={CreateUnit.floors}
-              />
-            </div>
-          </div>}
+          {CreateUnit.multiple &&
+            <div className="col-md-3 col-12 mb-2">
+              <p className="text-alternate">Total Floors</p>
+              <div className="input-group">
+                <input
+                  type="number"
+                  className="form-control"
+                  id="floors"
+                  name="floors"
+                  onChange={(e) => { handleInputs(e); }}
+                  value={CreateUnit.floors}
+                />
+              </div>
+            </div>}
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Carpet Area</p>
             <div className="input-group">
@@ -398,43 +463,6 @@ const CreateUnit = () => {
               />
             </div>
           </div>
-          {/* <div className="col-md-6 col-12 mb-2">
-            <p className="text-alternate">Total No Of Flat On This Unit</p>
-            <div className="input-group">
-              <input
-                type="number"
-                className="form-control"
-                id="totalflats"
-                name="total_number_of_flat_on_this_unit"
-                onChange={handleInputs}
-                value={CreateUnit.total_number_of_flat_on_this_unit}
-                required=""
-              />
-            </div>
-          </div> */}
-          {/* <div className="col-md-6 col-12 mb-2">
-            <p className="text-alternate">Parking Details</p>
-            <div className="input-group">
-              <span className="input-group-text">
-                <input
-                  aria-label="Parkings"
-                  id="isParkings"
-                  name="isParkings"
-                  type="radio"
-                  className="form-check-input"
-                />
-              </span>
-              <input
-                type="number"
-                aria-label="No Of Parking"
-                placeholder="Enter Total No Of Parkings"
-                className="form-control"
-                name='parking_detail'
-                onChange={handleInputs}
-                value={CreateUnit.parking_detail}
-              />
-            </div>
-          </div> */}
           <div className="col-md-4 col-12 mb-2">
             <p className="text-alternate">Price per sq.ft</p>
             <div className="input-group">
@@ -446,7 +474,7 @@ const CreateUnit = () => {
                 className="form-control"
                 name='price'
                 id='price'
-                onChange={(e) => { handleInputs(e);}}
+                onChange={(e) => { handleInputs(e); }}
                 value={CreateUnit.price}
               />
             </div>
@@ -461,7 +489,7 @@ const CreateUnit = () => {
                 className="form-control"
                 name='sgst'
                 id='sgst'
-                onChange={(e) => { handleInputs(e);}}
+                onChange={(e) => { handleInputs(e); }}
                 value={CreateUnit.sgst}
               />
             </div>
@@ -476,7 +504,7 @@ const CreateUnit = () => {
                 className="form-control"
                 name='cgst'
                 id='cgst'
-                onChange={(e) => { handleInputs(e);}}
+                onChange={(e) => { handleInputs(e); }}
                 value={CreateUnit.cgst}
               />
             </div>
@@ -493,7 +521,7 @@ const CreateUnit = () => {
                 name='pricewithtax'
                 id='pricewithtax'
                 disabled
-                onChange={(e)=>handleInputs(e)}
+                onChange={(e) => handleInputs(e)}
                 value={CreateUnit.pricewithtax}
               />
             </div>
@@ -504,25 +532,7 @@ const CreateUnit = () => {
                 <button
                   type="button"
                   class="btn btn-outline-warning btn-md mb-1 mr-1"
-                  onClick={() => {
-                    setCreateUnit({
-                      ...CreateUnit,
-                      Project: null,
-                      building: null,
-                      unit_name: null,
-                      total_area_this_unit: null,
-                      carpet_area: null,
-                      build_up_area: null,
-                      balcony_area: null,
-                      total_number_of_flat_on_this_unit: null,
-                      parking_detail: null,
-                      extra_facilities: null, id: null,
-                      sgst:null,cgst:null,price:null,
-                      pricewithtax:null
-                    });
-                    setIsEdit(false);
-
-                  }}
+                  onClick={exitEdit}
                 >
                   {" "}
                   Exit{" "}
@@ -620,9 +630,9 @@ const DataTableCustom = (props) => {
     else setModal(true);
   }
 
-  const setTotalPice = (val)=>{
+  const setTotalPice = (val) => {
     let price = parseFloat(val) + (parseFloat(val) * 0.18);
-    setData({...Data, totalPrice:price});
+    setData({ ...Data, totalPrice: price });
   }
 
 
@@ -658,7 +668,7 @@ const DataTableCustom = (props) => {
                   <Input type="text" value={data.name} name="name" id="name" onChange={(e) => onChange(e)} placeholder="Provider Name" />
                   <p className="mt-1">Price(without 18% GST)</p>
                   <p className="mb-1">GST will be added at checkout</p>
-                  <Input type="text"  id="totalPrice" onChange={(e)=>setTotalPice(e.target.value)}  name="totalPrice" placeholder="Price" />
+                  <Input type="text" id="totalPrice" onChange={(e) => setTotalPice(e.target.value)} name="totalPrice" placeholder="Price" />
 
                 </ModalBody>
                 <ModalFooter>

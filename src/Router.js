@@ -304,7 +304,7 @@ class AppRouter extends React.Component {
           <Route exact path="/all/booking" component={BookingDetail} />
           <AppRoute exact path="/demands/raise" component={RaiseDemand} />
           <Route exact path="/installment/view" component={InstallmentPDF} />
-          <Route exact path="/maintenance" component={Maintenance} />
+          <AppRoute exact path="/maintenance" component={Maintenance} />
           <AppRoute
             exact
             path="/booking-status/view"
